@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="mingjing.content">
+
+    <browser:viewlet
+      name="script_to_footer"
+      for="*"
+      manager="plone.app.layout.viewlets.interfaces.IBelowContentBody"
+      template="template/script_to_footer.pt"
+      class=".viewlet.ScriptToFooter"
+      permission="zope2.View"
+    />
+
+</configure>

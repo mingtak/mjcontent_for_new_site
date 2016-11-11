@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="mingjing.content">
+
+    <include package="plone.behavior" file="meta.zcml" />
+
+    <plone:behavior
+        title="originalUrl"
+        description="News Original URL"
+        provides=".behaviors.IOriginalUrl"
+        factory=".behaviors.OriginalUrl"
+        />
+
+</configure>
