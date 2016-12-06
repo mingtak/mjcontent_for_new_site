@@ -17,4 +17,11 @@
       directory="static"
       />
 
+  <browser:page
+      name="cover_view"
+      for="mingjing.content.interfaces.ICover"
+      class=".views.CoverView"
+      permission="zope2.View"
+      />
+
 </configure>
