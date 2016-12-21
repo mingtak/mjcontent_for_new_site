@@ -11,6 +11,19 @@ class IMingjingContentLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
+class IYoutube(Interface):
+
+    title = schema.TextLine(
+        title=_(u"Title"),
+        required=True,
+    )
+
+    youtubeURL = schema.URI(
+        title=_(u"Youtube URL"),
+        required=True,
+    )
+
+
 class IMember(Interface):
 
     title = schema.TextLine(
