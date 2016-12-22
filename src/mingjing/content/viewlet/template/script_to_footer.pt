@@ -1,27 +1,4 @@
 <script>
 
-var lazyImages;
-initLazyImages = function () {
-  var temp = [];
-  lazyImages = document.querySelectorAll('div.js-delayed-image-load');
-  for(var i = 0; i < lazyImages.length; i++) {
-    temp.push(lazyImages[i]);
-  }
-  lazyImages = temp;
-};
-
-loadImage = function (img) {
-  var imgObj = new Image(), src = img.getAttribute('lazy-src');
-  //圖片讀取完成時，取代讀取小圖示
-  imgObj.onload = function() {
-    if (!! img.parent) {
-      img.parent.replaceChild(imgObj, img)
-    } else {
-      img.src = src;
-    }
-  };
-  imgObj.src = src;
-};
-
 
 </script>

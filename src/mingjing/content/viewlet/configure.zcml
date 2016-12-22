@@ -7,9 +7,18 @@
     <browser:viewlet
       name="script_to_footer"
       for="*"
-      manager="plone.app.layout.viewlets.interfaces.IBelowContentBody"
+      manager="plone.app.layout.viewlets.interfaces.IBelowContent"
       template="template/script_to_footer.pt"
       class=".viewlet.ScriptToFooter"
+      permission="zope2.View"
+    />
+
+    <browser:viewlet
+      name="rwd_menu"
+      for="*"
+      manager="plone.app.layout.viewlets.interfaces.IBelowContent"
+      template="template/rwd_menu.pt"
+      class=".viewlet.RwdMenu"
       permission="zope2.View"
     />
 
