@@ -18,6 +18,13 @@
       />
 
   <browser:page
+      name="mingjing_news"
+      for="plone.app.contenttypes.interfaces.IFolder"
+      class=".mingjing.MingjingNews"
+      permission="zope2.View"
+      />
+
+  <browser:page
       name="to_youtube"
       for="mingjing.content.interfaces.IYoutube"
       class=".views.ToYoutube"
