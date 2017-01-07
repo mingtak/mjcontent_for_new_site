@@ -2,7 +2,16 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
-    i18n_domain="mingjingnews.content">
+    i18n_domain="mingjing.content">
+
+    <plone:portlet
+        name="mingjing.content.portlet.Tabs"
+        interface=".tabs.ITabs"
+        assignment=".tabs.Assignment"
+        renderer=".tabs.Renderer"
+        addview=".tabs.AddForm"
+        editview=".tabs.EditForm"
+        />
 
 </configure>
 

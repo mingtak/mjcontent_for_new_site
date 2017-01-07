@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<portlets
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  i18n:domain="mingjing.content">
+
+  <!-- Portlet type registrations -->
+
+  <portlet
+    addview="mingjing.content.portlet.Tabs"
+    title="Tabs portlet"
+    description="A portlet to rendering Tabs contents."
+    i18n:attributes="title;
+                     description"
+    />
+
+</portlets>
+

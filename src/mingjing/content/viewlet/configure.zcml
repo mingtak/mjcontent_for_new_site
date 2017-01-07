@@ -14,11 +14,29 @@
     />
 
     <browser:viewlet
+      name="above_content_info"
+      for="*"
+      manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+      template="template/above_content_info.pt"
+      class="plone.app.layout.viewlets.common.PathBarViewlet"
+      permission="zope2.View"
+    />
+
+    <browser:viewlet
       name="rwd_menu"
       for="*"
       manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
       template="template/rwd_menu.pt"
       class="plone.app.layout.viewlets.common.GlobalSectionsViewlet"
+      permission="zope2.View"
+    />
+
+    <browser:viewlet
+      name="social_list"
+      for="*"
+      manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+      template="template/social_list.pt"
+      class=".viewlet.SocialList"
       permission="zope2.View"
     />
 

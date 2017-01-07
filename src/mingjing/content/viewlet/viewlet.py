@@ -9,3 +9,10 @@ class RwdMenu(base.ViewletBase):
 
 class ScriptToFooter(base.ViewletBase):
     """  """
+
+
+class AboveContentInfo(base.ViewletBase):
+    """  """
+
+class SocialList(base.ViewletBase):
+    """  """

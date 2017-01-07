@@ -1,0 +1,13 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      tal:omit-tag="">
+<div class="widget"
+     i18n:domain="mingjing.content">
+
+<h5 class="widget-title" tal:condition="view/data/text">${view/data/text}</h5>
+<metal:macro use-macro="context/@@mingjing_macro/macros/tabs"/>
+
+</div>
+</html>
+
