@@ -3,4 +3,5 @@
   <object name="Member" meta_type="Dexterity FTI"/>
   <object name="Cover" meta_type="Dexterity FTI"/>
   <object name="Youtube" meta_type="Dexterity FTI"/>
+  <object name="Ebook" meta_type="Dexterity FTI"/>
 </object>

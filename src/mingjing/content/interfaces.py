@@ -11,6 +11,19 @@ class IMingjingContentLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
+class IEbook(Interface):
+
+    title = schema.TextLine(
+        title=_(u"Title"),
+        required=True,
+    )
+
+    description = schema.Text(
+        title=_(u"Description"),
+        required=False,
+    )
+
+
 class IYoutube(Interface):
 
     title = schema.TextLine(
