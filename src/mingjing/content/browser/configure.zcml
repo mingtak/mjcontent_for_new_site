@@ -25,6 +25,48 @@
       />
 
   <browser:page
+      name="mingjing_tv"
+      for="plone.app.contenttypes.interfaces.IFolder"
+      class=".mingjing.MingjingTv"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="mingjing_mag"
+      for="plone.app.contenttypes.interfaces.IFolder"
+      class=".mingjing.MingjingMag"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="mingjing_blog"
+      for="plone.app.contenttypes.interfaces.IFolder"
+      class=".mingjing.MingjingBlog"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="mingjing_pub"
+      for="plone.app.contenttypes.interfaces.IFolder"
+      class=".mingjing.MingjingPub"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="mingjing_book"
+      for="plone.app.contenttypes.interfaces.IFolder"
+      class=".mingjing.MingjingBook"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="mingjing_ebook"
+      for="plone.app.contenttypes.interfaces.IFolder"
+      class=".mingjing.MingjingEbook"
+      permission="zope2.View"
+      />
+
+  <browser:page
       name="to_youtube"
       for="mingjing.content.interfaces.IYoutube"
       class=".views.ToYoutube"

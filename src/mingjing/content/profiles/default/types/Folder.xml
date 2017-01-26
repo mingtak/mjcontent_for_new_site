@@ -46,6 +46,12 @@
     <element value="tabular_view"/>
     <element value="listing_view"/>
     <element value="mingjing_news"/>
+    <element value="mingjing_tv"/>
+    <element value="mingjing_mag"/>
+    <element value="mingjing_blog"/>
+    <element value="mingjing_pub"/>
+    <element value="mingjing_book"/>
+    <element value="mingjing_ebook"/>
   </property>
 
   <!-- Method aliases -->
