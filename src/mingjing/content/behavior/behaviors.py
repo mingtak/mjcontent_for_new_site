@@ -12,11 +12,19 @@ from z3c.relationfield.schema import RelationList, RelationChoice
 from plone.app.vocabularies.catalog import CatalogSource
 from plone.dexterity.interfaces import IDexterityContent
 from plone.directives import dexterity
+from plone.app.textfield import RichText
+
+
+class IFreeContent(model.Schema):
+    """ Add RichText for Free Content """
+    freeContent = RichText(
+        title=_(u"Free Content"),
+        required=False,
+    )
 
 
 class IOriginalUrl(model.Schema):
-    """Add url field for News Original URL
-    """
+    """ Add url field for News Original URL """
 
     dexterity.write_permission(originalUrl='cmf.ManagePortal')
     originalUrl = schema.URI(
@@ -25,6 +33,7 @@ class IOriginalUrl(model.Schema):
     )
 
 
+alsoProvides(IFreeContent, IFormFieldProvider)
 alsoProvides(IOriginalUrl, IFormFieldProvider)
 
 
@@ -36,6 +45,17 @@ def context_property(name):
     def deleter(self):
         delattr(self.context, name)
     return property(getter, setter, deleter)
+
+
+class FreeContent(object):
+    implements(IFreeContent)
+    adapts(IDexterityContent)
+
+    def __init__(self,context):
+        self.context = context
+
+    # -*- Your behavior property setters & getters here ... -*-
+    freeContent = context_property("freeContent")
 
 
 class OriginalUrl(object):

@@ -12,24 +12,11 @@ class IMingjingContentLayer(IDefaultBrowserLayer):
 
 
 class IEbook(Interface):
-
-    title = schema.TextLine(
-        title=_(u"Title"),
-        required=True,
-    )
-
-    description = schema.Text(
-        title=_(u"Description"),
-        required=False,
-    )
+    """  """
 
 
 class IYoutube(Interface):
-
-    title = schema.TextLine(
-        title=_(u"Title"),
-        required=True,
-    )
+    """  """
 
     youtubeURL = schema.URI(
         title=_(u"Youtube URL"),
@@ -38,26 +25,8 @@ class IYoutube(Interface):
 
 
 class IMember(Interface):
-
-    title = schema.TextLine(
-        title=_(u"Title"),
-        required=True,
-    )
-
-    description = schema.Text(
-        title=_(u"Description"),
-        required=False,
-    )
+    """  """
 
 
 class ICover(Interface):
-
-    title = schema.TextLine(
-        title=_(u"Title"),
-        required=True,
-    )
-
-    description = schema.Text(
-        title=_(u"Description"),
-        required=False,
-    )
+    """  """

@@ -12,6 +12,14 @@
         factory=".behaviors.OriginalUrl"
         />
 
+    <plone:behavior
+        title="freeContent"
+        description="Free Content"
+        provides=".behaviors.IFreeContent"
+        factory=".behaviors.FreeContent"
+        />
+
+<!-- overrides -->
   <!-- Metadata -->
   <plone:behavior
       title="Categorization"
@@ -19,6 +27,16 @@
       description="Adds keywords(without language) fields."
       provides=".metadata.ICategorization"
       factory=".metadata.Categorization"
+      for="plone.dexterity.interfaces.IDexterityContent"
+      />
+
+  <!-- Basic -->
+  <plone:behavior
+      name="mingjing.basic"
+      title="Basic metadata"
+      description="Adds title and description fields."
+      provides=".metadata.IBasic"
+      factory=".metadata.Basic"
       for="plone.dexterity.interfaces.IDexterityContent"
       />
 

@@ -32,7 +32,7 @@
 
   <!-- Enabled behaviors -->
   <property name="behaviors" purge="true">
-    <element value="plone.app.dexterity.behaviors.metadata.IBasic"/>
+    <element value="mingjing.content.behavior.metadata.IBasic"/>
     <element value="mingjing.content.behavior.metadata.ICategorization"/>
     <element value="Products.CMFPlone.interfaces.constrains.ISelectableConstrainTypes"/>
   </property>

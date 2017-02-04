@@ -68,7 +68,7 @@ class IBasic(model.Schema):
         required=True
     )
 
-    description = schema.Text(
+    description = schema.TextLine(
         title=_(u'label_description', default=u'Summary'),
         description=_(
             u'help_description',

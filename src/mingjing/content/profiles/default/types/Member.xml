@@ -34,6 +34,7 @@
 
   <!-- Enabled behaviors -->
   <property name="behaviors">
+    <element value="mingjing.content.behavior.metadata.IBasic"/>
     <element value="plone.app.content.interfaces.INameFromTitle" />
   </property>
 
