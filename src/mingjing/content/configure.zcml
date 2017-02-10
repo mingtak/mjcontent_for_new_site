@@ -13,6 +13,7 @@
   <include package=".viewlet" />
   <include package=".portlet" />
   <include package=".event" />
+  <include file="permissions.zcml" />
 
   <genericsetup:registerProfile
       name="default"
