@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<rolemap>
+  <roles>
+    <role name="Paid Member"/>
+  </roles>
+  <permissions>
+    <permission name="MingJing News: Paid"
+                acquire="True">
+      <role name="Manager"/>
+      <role name="Site Administrator"/>
+      <role name="Owner"/>
+      <role name="Paid Member"/>
+    </permission>
+  </permissions>
+</rolemap>
