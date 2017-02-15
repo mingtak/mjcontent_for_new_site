@@ -28,5 +28,11 @@ class IMember(Interface):
     """  """
 
 
+
 class ICover(Interface):
     """  """
+
+    radioList = schema.Text(
+        title=_(u"Radio List"),
+        required=False,
+    )

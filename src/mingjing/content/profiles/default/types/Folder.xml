@@ -35,6 +35,7 @@
     <element value="mingjing.content.behavior.metadata.IBasic"/>
     <element value="mingjing.content.behavior.metadata.ICategorization"/>
     <element value="Products.CMFPlone.interfaces.constrains.ISelectableConstrainTypes"/>
+    <element value="mingjing.content.behavior.behaviors.INamedFromTimeStamp"/>
   </property>
 
   <!-- View information -->

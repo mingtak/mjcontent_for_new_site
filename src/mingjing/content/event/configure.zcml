@@ -3,5 +3,10 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="mingjingnews.content">
 
+    <subscriber
+        for="* zope.lifecycleevent.interfaces.IObjectAddedEvent"
+        handler=".event.moveContentToTop"
+    />
+
 </configure>
 

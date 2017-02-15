@@ -13,6 +13,9 @@ from plone.app.vocabularies.catalog import CatalogSource
 from plone.dexterity.interfaces import IDexterityContent
 from plone.directives import dexterity
 from plone.app.textfield import RichText
+from plone.app.content.interfaces import INameFromTitle
+from DateTime import DateTime
+import random
 
 
 class IFreeContent(model.Schema):
@@ -68,3 +71,23 @@ class OriginalUrl(object):
     # -*- Your behavior property setters & getters here ... -*-
     originalUrl = context_property("originalUrl")
 
+
+class INamedFromTimeStamp(INameFromTitle):
+    """ Marker/Form interface for namedFromTimeStamp
+    """
+
+
+class NamedFromTimeStamp(object):
+    """ Adapter for NamedFromTimeStamp
+    """
+    implements(INamedFromTimeStamp)
+    adapts(IDexterityContent)
+
+    def __init__(self, context):
+        self.context = context
+
+    # -*- Your behavior property setters & getters here ... -*-
+    @property
+    def title(self):
+        timeString = '%s%s' % (DateTime().strftime("%Y%m%d%H%M"), random.randint(100000, 999999))
+        return timeString

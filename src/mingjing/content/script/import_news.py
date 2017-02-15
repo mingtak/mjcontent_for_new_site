@@ -22,9 +22,11 @@ import logging
 
 # howto: bin/client1 run pathtofile/import_news.py portal_name admin_id news_site_code(ex. bbc)
 # mapping: sys.argv[3] is portal_name, sys.argv[4] is admin_id, sys.argv[5] is news_site_code
+#          sys.argv[6] is dataType, 'xml', 'html' ...
 
 news_site_code = {
     'bbc':'http://feeds.bbci.co.uk/zhongwen/trad/rss.xml',
+    'youtube_radio':'https://www.youtube.com/playlist?list=PL7rBJWuEBrPYJCcxbTI-qTzuEEmiCCDXX',
 }
 
 logger = logging.getLogger('Import News')
@@ -33,7 +35,7 @@ logger = logging.getLogger('Import News')
 
 class ImportNews:
 
-    def __init__(self, portal, admin, news_site):
+    def __init__(self, portal, admin, news_site, dataType):
         root = makerequest.makerequest(app)
         self.portal = getattr(root, portal, None)
         self.news_site = news_site_code.get(news_site, None)
@@ -47,6 +49,8 @@ class ImportNews:
         setHooks()
         setSite(self.portal)
         self.portal.setupCurrentSkin(self.portal.REQUEST)
+
+        self.dataType = dataType
 
 
     def getDocs(self, site_code):
@@ -62,7 +66,19 @@ class ImportNews:
             logger.error('Wrong response, response code: %s' % docs.getcode())
             exit()
 
-        soup = BeautifulSoup(docs, "xml")
+        if self.dataType == 'xml':
+            soup = BeautifulSoup(docs, "xml")
+        elif self.dataType == 'html':
+            soup = BeautifulSoup(docs, "lxml")
+        elif self.dataType == "html5":
+            soup = BeautifulSoup(docs, "html5lib")
+        else:
+            soup = BeautifulSoup(docs, "xml")
+
+        if site_code == 'youtube_radio':
+            result = self.youtubeRadioList(soup)
+            transaction.commit()
+            return
 
         for item in soup.findAll('item'):
             link = unicode(item.link.string)
@@ -101,6 +117,17 @@ class ImportNews:
             print title
 
 
+    def youtubeRadioList(self, soup):
+#        import pdb; pdb.set_trace()
+        items = soup.find_all("a", "pl-video-title-link")
+        cover = self.portal['cover']
+        cover.radioList = ''
+        for item in items[0:10]:
+            title = unicode(item.string).strip()
+            url = 'https://youtube.com%s' % item.get('href')
+            cover.radioList += '%s|||%s\n' % (title, url)
+
+
     def bbcNewsContent(self, pageSoup):
         title = unicode(pageSoup.find(class_='story-body__h1').string)
         text = pageSoup.find(class_='story-body__inner')
@@ -135,5 +162,5 @@ class ImportNews:
 
 
 
-instance = ImportNews(sys.argv[3], sys.argv[4], sys.argv[5])
+instance = ImportNews(sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
 instance.getDocs(sys.argv[5])

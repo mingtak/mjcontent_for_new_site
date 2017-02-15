@@ -34,7 +34,7 @@
 
   <!-- Enabled behaviors -->
   <property name="behaviors">
-    <element value="plone.app.content.interfaces.INameFromTitle" />
+    <element value="mingjing.content.behavior.behaviors.INamedFromTimeStamp"/>
     <element value="mingjing.content.behavior.metadata.IBasic"/>
     <element value="plone.app.contenttypes.behaviors.leadimage.ILeadImage"/>
   </property>

@@ -34,7 +34,7 @@
   <property name="behaviors" purge="true">
     <element value="mingjing.content.behavior.metadata.IBasic"/>
     <element value="mingjing.content.behavior.metadata.ICategorization"/>
-    <element value="plone.app.content.interfaces.INameFromTitle"/>
+    <element value="mingjing.content.behavior.behaviors.INamedFromTimeStamp"/>
   </property>
 
   <!-- View information -->
