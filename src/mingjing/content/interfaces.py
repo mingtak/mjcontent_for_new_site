@@ -75,3 +75,16 @@ class ICover(Interface):
         description=_(u"Don't edit this, auto renew."),
         required=False,
     )
+
+    liveProgram_1 = schema.Text(
+        title=_(u"Live Program 1"),
+        description=_(u"Live Program 1"),
+        required=False,
+    )
+
+    liveProgram_2 = schema.Text(
+        title=_(u"Live Program 2"),
+        description=_(u"Live Program 2"),
+        required=False,
+    )
+
