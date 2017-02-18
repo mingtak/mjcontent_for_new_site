@@ -19,6 +19,7 @@ from plone import namedfile
 #import html2text
 import urllib2
 import logging
+import json
 
 # howto: bin/client1 run pathtofile/import_news.py portal_name admin_id news_site_code(ex. bbc)
 # mapping: sys.argv[3] is portal_name, sys.argv[4] is admin_id, sys.argv[5] is news_site_code
@@ -27,6 +28,8 @@ import logging
 news_site_code = {
     'bbc':'http://feeds.bbci.co.uk/zhongwen/trad/rss.xml',
     'youtube_radio':'https://www.youtube.com/playlist?list=PL7rBJWuEBrPYJCcxbTI-qTzuEEmiCCDXX',
+    'liveProgram_1':'http://tv.mingjingnet.com/playlist_svr1.json',
+    'liveProgram_2':'http://tv.mingjingnet.com/playlist_svr2.json',
 }
 
 logger = logging.getLogger('Import News')
@@ -66,6 +69,11 @@ class ImportNews:
             logger.error('Wrong response, response code: %s' % docs.getcode())
             exit()
 
+        if site_code in ['liveProgram_1', 'liveProgram_2']:
+            self.liveProgram(site_code, docs)
+            transaction.commit()
+            return
+
         if self.dataType == 'xml':
             soup = BeautifulSoup(docs, "xml")
         elif self.dataType == 'html':
@@ -75,6 +83,7 @@ class ImportNews:
         else:
             soup = BeautifulSoup(docs, "xml")
 
+        # To youtube_radio
         if site_code == 'youtube_radio':
             result = self.youtubeRadioList(soup)
             transaction.commit()
@@ -115,6 +124,17 @@ class ImportNews:
 
             transaction.commit()
             print title
+
+
+    def liveProgram(self, site_code, docs):
+        portal = api.portal.get()
+        cover = portal['cover']
+        if json.loads(docs).get('startTime'):
+            if site_code == 'liveProgram_1':
+                cover.liveProgram_1 = docs
+            if site_code == 'liveProgram_2':
+                cover.liveProgram_2 = docs
+        return
 
 
     def youtubeRadioList(self, soup):
