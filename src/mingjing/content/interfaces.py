@@ -7,7 +7,8 @@ from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from z3c.relationfield.schema import RelationChoice, RelationList
 from plone.app.vocabularies.catalog import CatalogSource
-from plone.supermodel import model
+#from plone.supermodel import model
+from plone.directives import form
 from DateTime import DateTime
 
 date_range = {
@@ -18,6 +19,10 @@ date_range = {
 
 class IMingjingContentLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
+
+
+class IBlog(Interface):
+    """  """
 
 
 class IEbook(Interface):
@@ -70,18 +75,21 @@ class ICover(Interface):
         required=False,
     )
 
+    form.mode(radioList='hidden')
     radioList = schema.Text(
         title=_(u"Radio List"),
         description=_(u"Don't edit this, auto renew."),
         required=False,
     )
 
+    form.mode(liveProgram_1='hidden')
     liveProgram_1 = schema.Text(
         title=_(u"Live Program 1"),
         description=_(u"Live Program 1"),
         required=False,
     )
 
+    form.mode(liveProgram_2='hidden')
     liveProgram_2 = schema.Text(
         title=_(u"Live Program 2"),
         description=_(u"Live Program 2"),

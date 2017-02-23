@@ -41,6 +41,7 @@
     <element value="plone.app.relationfield.behavior.IRelatedItems"/>
     <element value="plone.app.lockingbehavior.behaviors.ILocking" />
     <element value="mingjing.content.behavior.behaviors.IOriginalUrl" />
+    <element value="mingjing.content.behavior.behaviors.IOldFields" />
   </property>
 
   <!-- View information -->

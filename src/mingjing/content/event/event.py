@@ -8,4 +8,6 @@ def moveContentToTop(item, event):
         return
 
     if item.portal_type not in ['File', 'Image']:
+        try:
             folder.moveObjectsToTop(item.id)
+        except:pass

@@ -1,0 +1,6 @@
+<?python
+toEdit = True if ('folder_contents' in view.request.get('HTTP_REFERER') and context.Type() != 'Folder') else False
+?>
+<tal:toEdit tal:condition="toEdit">
+    <script>document.location.href="${context/absolute_url}/@@edit";</script>
+</tal:toEdit>

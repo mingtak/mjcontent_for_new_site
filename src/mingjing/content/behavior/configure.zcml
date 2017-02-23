@@ -27,6 +27,13 @@
         factory=".behaviors.FreeContent"
         />
 
+    <plone:behavior
+        title="oldFields"
+        description="Free Content"
+        provides=".behaviors.IOldFields"
+        factory=".behaviors.OldFields"
+        />
+
 <!-- overrides -->
   <!-- Metadata -->
   <plone:behavior

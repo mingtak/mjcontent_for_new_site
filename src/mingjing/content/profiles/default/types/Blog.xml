@@ -2,19 +2,19 @@
 <object
     i18n:domain="mingjing.content"
     meta_type="Dexterity FTI"
-    name="Youtube"
+    name="Blog"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic properties -->
   <property
       i18n:translate=""
-      name="title">Youtube</property>
+      name="title">Blog</property>
   <property
       i18n:translate=""
       name="description"></property>
 
   <property name="allow_discussion">False</property>
-  <property name="factory">Youtube</property>
+  <property name="factory">Blog</property>
   <property name="icon_expr"></property>
   <property name="link_target"></property>
 
@@ -30,7 +30,7 @@
   <property name="klass">plone.dexterity.content.Item</property>
   <property name="model_file"></property>
   <property name="model_source"></property>
-  <property name="schema">mingjing.content.interfaces.IYoutube</property>
+  <property name="schema">mingjing.content.interfaces.IBlog</property>
 
   <!-- Enabled behaviors -->
   <property name="behaviors">
@@ -42,7 +42,7 @@
   </property>
 
   <!-- View information -->
-  <property name="add_view_expr">string:${folder_url}/++add++Youtube</property>
+  <property name="add_view_expr">string:${folder_url}/++add++Blog</property>
   <property name="immediate_view">view</property>
   <property name="default_view">view</property>
   <property name="default_view_fallback">False</property>

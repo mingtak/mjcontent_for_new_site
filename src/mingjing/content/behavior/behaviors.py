@@ -36,8 +36,27 @@ class IOriginalUrl(model.Schema):
     )
 
 
+class IOldFields(model.Schema):
+    """ Add Old Fields """
+    oldPicturePath = schema.TextLine(
+        title=_(u"Old Picture Path"),
+        required=False,
+    )
+
+    oldKeywords = schema.TextLine(
+        title=_(u"Old Keywords"),
+        required=False,
+    )
+
+    oldCreateTime = schema.Datetime(
+        title=_(u"Old Create Time"),
+        required=False,
+    )
+
+
 alsoProvides(IFreeContent, IFormFieldProvider)
 alsoProvides(IOriginalUrl, IFormFieldProvider)
+alsoProvides(IOldFields, IFormFieldProvider)
 
 
 def context_property(name):
@@ -48,6 +67,19 @@ def context_property(name):
     def deleter(self):
         delattr(self.context, name)
     return property(getter, setter, deleter)
+
+
+class OldFields(object):
+    implements(IOldFields)
+    adapts(IDexterityContent)
+
+    def __init__(self,context):
+        self.context = context
+
+    # -*- Your behavior property setters & getters here ... -*-
+    oldPicturePath = context_property("oldPicturePath")
+    oldKeywords = context_property("oldKeywords")
+    oldCreateTime = context_property("oldCreateTime")
 
 
 class FreeContent(object):
