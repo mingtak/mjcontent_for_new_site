@@ -223,7 +223,7 @@ msgstr ""
 #. Default: "Used in item listings and search results."
 #: ./behavior/metadata.py:73
 msgid "help_description"
-msgstr ""
+msgstr "使用約 50 字以內介紹本文"
 
 #. Default: "If this date is in the future, the content will not show up in listings and searches until this date."
 #: ./behavior/metadata.py:140
@@ -238,7 +238,7 @@ msgstr ""
 #. Default: "Tags are commonly used for ad-hoc organization of content."
 #: ./behavior/metadata.py:94
 msgid "help_tags"
-msgstr ""
+msgstr "請對本文下關鍵字以分類文章"
 
 #. Default: "Contributors"
 #: ./behavior/metadata.py:203
@@ -258,7 +258,7 @@ msgstr ""
 #. Default: "Summary"
 #: ./behavior/metadata.py:72
 msgid "label_description"
-msgstr ""
+msgstr "文章簡述"
 
 #. Default: "Publishing Date"
 #: ./behavior/metadata.py:139
@@ -288,12 +288,12 @@ msgstr ""
 #. Default: "Tags"
 #: ./behavior/metadata.py:93
 msgid "label_tags"
-msgstr ""
+msgstr "關鍵字"
 
 #. Default: "Title"
 #: ./behavior/metadata.py:67
 msgid "label_title"
-msgstr ""
+msgstr "標題"
 
 #: ./configure.zcml:25
 msgid "mingjing.content"

@@ -16,6 +16,7 @@ from plone.app.textfield import RichText
 from plone.app.content.interfaces import INameFromTitle
 from DateTime import DateTime
 import random
+from plone.directives import form
 
 
 class IFreeContent(model.Schema):
@@ -30,6 +31,7 @@ class IOriginalUrl(model.Schema):
     """ Add url field for News Original URL """
 
     dexterity.write_permission(originalUrl='cmf.ManagePortal')
+    form.mode(originalUrl='hidden')
     originalUrl = schema.URI(
         title=_(u"Original URL"),
         required=False,
@@ -38,16 +40,19 @@ class IOriginalUrl(model.Schema):
 
 class IOldFields(model.Schema):
     """ Add Old Fields """
+    form.mode(oldPicturePath='hidden')
     oldPicturePath = schema.TextLine(
         title=_(u"Old Picture Path"),
         required=False,
     )
 
+    form.mode(oldKeywords='hidden')
     oldKeywords = schema.TextLine(
         title=_(u"Old Keywords"),
         required=False,
     )
 
+    form.mode(oldCreateTime='hidden')
     oldCreateTime = schema.Datetime(
         title=_(u"Old Create Time"),
         required=False,
