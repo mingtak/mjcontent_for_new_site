@@ -2,6 +2,8 @@
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone import api
+import json
+from datetime import datetime
 
 
 class MingjingFolder(BrowserView):
@@ -16,6 +18,17 @@ class MingjingNews(MingjingFolder):
 
 class MingjingTv(MingjingFolder):
     template = ViewPageTemplateFile('template/mingjing_tv.pt')
+
+    def liveProgram(self, jsonString):
+        context = self.context
+        liveProgram = json.loads(jsonString)
+#        startTime = datetime.fromtimestamp(liveProgram['startTime'])
+        startTime = int(liveProgram['startTime'])
+        for item in liveProgram['pl']:
+            item['start'] = datetime.fromtimestamp(startTime)
+            item['end'] = datetime.fromtimestamp(startTime+item['during'])
+            startTime += item['during']
+        return liveProgram['pl']
 
 
 class MingjingMag(MingjingFolder):

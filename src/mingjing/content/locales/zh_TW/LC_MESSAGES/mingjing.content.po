@@ -1,6 +1,3 @@
-# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
-# SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -15,15 +12,15 @@ msgstr ""
 "Language-Code: en\n"
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
-"Domain: mingjing.content\n"
+"Domain: DOMAIN\n"
 
 #: ./profiles/default/portlets.xml
 msgid "A portlet to rendering Tabs contents."
-msgstr ""
+msgstr "側邊欄位,顯示Tab列表"
 
 #: ./portlet/tabs.py:53
 msgid "Add Tabs Portlet"
-msgstr ""
+msgstr "新增Tab列表側邊欄"
 
 #: ./behavior/configure.zcml:46
 msgid "Adds keywords(without language) fields."
@@ -31,168 +28,168 @@ msgstr ""
 
 #: ./behavior/configure.zcml:56
 msgid "Adds title and description fields."
-msgstr ""
+msgstr "新增標題/描述欄位"
 
 #: ./behavior/configure.zcml:56
 msgid "Basic metadata"
-msgstr ""
+msgstr "內容基本描述"
 
 #: ./profiles/default/types/Blog.xml
 msgid "Blog"
-msgstr ""
+msgstr "部落格"
 
 #: ./behavior/configure.zcml:46
 msgid "Categorization"
-msgstr ""
+msgstr "分類"
 
 #: ./profiles/default/types/Cover.xml
 msgid "Cover"
-msgstr ""
+msgstr "首頁封面"
 
 #: ./interfaces.py:81
 msgid "Don't edit this, auto renew."
-msgstr ""
+msgstr "請勿編輯本欄,本欄自動更新"
 
 #: ./profiles/default/types/Ebook.xml
 msgid "Ebook"
-msgstr ""
+msgstr "電子書"
 
 #: ./interfaces.py:67
 msgid "Ebooks Introduction"
-msgstr ""
+msgstr "電子書介紹"
 
 #: ./profiles/default/types/Blog.xml
 #: ./profiles/default/types/Cover.xml
 #: ./profiles/default/types/Ebook.xml
 msgid "Edit"
-msgstr ""
+msgstr "編輯"
 
 #: ./portlet/tabs.py:65
 msgid "Edit Tabs Portlet"
-msgstr ""
+msgstr "編輯側邊欄Tab"
 
 #: ./behavior/behaviors.py:24
 #: ./behavior/configure.zcml:28
 msgid "Free Content"
-msgstr ""
+msgstr "免費觀看內容"
 
 #: ./configure.zcml:25
 msgid "Installs the mingjing.content add-on."
-msgstr ""
+msgstr "安裝 mingjing.content 模組"
 
 #: ./interfaces.py:87
 msgid "Live Program 1"
-msgstr ""
+msgstr "直播節目表 1"
 
 #: ./interfaces.py:94
 msgid "Live Program 2"
-msgstr ""
+msgstr "直播節目表 2"
 
 #: ./interfaces.py:49
 msgid "Main Slider News"
-msgstr ""
+msgstr "新聞(slider輪播)"
 
 #: ./profiles/default/types/Member.xml
 msgid "Member"
-msgstr ""
+msgstr "會員"
 
 #: ./behavior/configure.zcml:14
 msgid "Named content id from time stamp"
-msgstr ""
+msgstr "以 timestamp 設定 id"
 
 #: ./behavior/configure.zcml:21
 msgid "News Original URL"
-msgstr ""
+msgstr "新聞原始連結"
 
 #: ./behavior/behaviors.py:52
 msgid "Old Create Time"
-msgstr ""
+msgstr "舊資料的建立時間"
 
 #: ./behavior/behaviors.py:47
 msgid "Old Keywords"
-msgstr ""
+msgstr "舊資料的 keywords"
 
 #: ./behavior/behaviors.py:42
 msgid "Old Picture Path"
-msgstr ""
+msgstr "舊資料的圖檔連結"
 
 #: ./behavior/behaviors.py:34
 msgid "Original URL"
-msgstr ""
+msgstr "來源連結"
 
 #: ./interfaces.py:68
 msgid "Please input books id, per line 1 id, In order is Newest, Hotest and eBook."
-msgstr ""
+msgstr "請輸入書刊 id, 每行一個 id, 可輸入3本書刊，依序是最新書刊/最熱書刊/電子書刊"
 
 #: ./interfaces.py:50
 msgid "Please input news id, per line one id, sorted on modified, max 10 news."
-msgstr ""
+msgstr "請輸入新聞 id, 每行一個 id, 會自動以最後修訂排序, 最多10筆新聞"
 
 #: ./interfaces.py:56
 msgid "Please input news id, per line one id, sorted on modified, max 8 news."
-msgstr ""
+msgstr "請輸入新聞 id, 每行一個 id, 會自動以最後修訂排序, 最多8筆新聞"
 
 #: ./interfaces.py:74
 msgid "Please input ranking news id, per line one id, sorted on modified, max 6 news."
-msgstr ""
+msgstr "請輸入排行新聞 id, 每行一個 id, 會自動以最後修訂排序, 最多8筆新聞"
 
 #: ./interfaces.py:62
 msgid "Please input tabs name, per line 5 tabs, Separated by commas, max 3 lines."
-msgstr ""
+msgstr "請輸入 tab 名稱，每行5個 tab, 以半型逗號 ',' 分隔，最多三行"
 
 #: ./interfaces.py:80
 msgid "Radio List"
-msgstr ""
+msgstr "電台列表"
 
 #: ./interfaces.py:73
 msgid "Ranking News"
-msgstr ""
+msgstr "新聞排行榜"
 
 #: ./portlet/tabs.py:22
 msgid "Related"
-msgstr ""
+msgstr "關聯項目"
 
 #: ./portlet/tabs.py:21
 msgid "Tabs"
-msgstr ""
+msgstr "Tabs"
 
 #: ./interfaces.py:61
 msgid "Tabs Name"
-msgstr ""
+msgstr "Tab 名稱"
 
 #: ./profiles/default/portlets.xml
 msgid "Tabs portlet"
-msgstr ""
+msgstr "Tab 側邊欄"
 
 #: ./portlet/tabs.py:16
 msgid "Text"
-msgstr ""
+msgstr "完整內容"
 
 #: ./portlet/tabs.py:54
 msgid "This portlet rendering Tabs."
-msgstr ""
+msgstr "這個側邊欄顯示 Tabs 列表"
 
 #: ./interfaces.py:55
 msgid "Today news"
-msgstr ""
+msgstr "今日新聞"
 
 #: ./configure.zcml:34
 msgid "Uninstalls the mingjing.content add-on."
-msgstr ""
+msgstr "御載 mingjing.content 模組"
 
 #: ./profiles/default/types/Blog.xml
 #: ./profiles/default/types/Cover.xml
 #: ./profiles/default/types/Ebook.xml
 msgid "View"
-msgstr ""
+msgstr "觀看"
 
 #: ./profiles/default/types/Youtube.xml
 msgid "Youtube"
-msgstr ""
+msgstr "Youtube 影片"
 
 #: ./interfaces.py:36
 msgid "Youtube URL"
-msgstr ""
+msgstr "Youtube 連結"
 
 #. Default: "Expiration date must be after publishing date."
 #: ./behavior/metadata.py:162
@@ -206,7 +203,7 @@ msgstr ""
 
 #: ./behavior/configure.zcml:28
 msgid "freeContent"
-msgstr ""
+msgstr "免費內容"
 
 #. Default: "The names of people that have contributed to this item. Each contributor should be on a separate line."
 #: ./behavior/metadata.py:204
@@ -308,12 +305,12 @@ msgstr ""
 
 #: ./behavior/configure.zcml:14
 msgid "namedFromTimeStamp"
-msgstr ""
+msgstr "由 timestamp 命名"
 
 #: ./behavior/configure.zcml:35
 msgid "oldFields"
-msgstr ""
+msgstr "舊網站欄位"
 
 #: ./behavior/configure.zcml:21
 msgid "originalUrl"
-msgstr ""
+msgstr "來源網址"

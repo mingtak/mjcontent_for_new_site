@@ -1,6 +1,11 @@
 <?python
-toEdit = True if ('folder_contents' in view.request.get('HTTP_REFERER') and context.Type() != 'Folder') else False
+toEdit = True if ('folder_contents' in view.request.get('HTTP_REFERER') and context.Type() not in ['Folder', 'Plone Site']) else False
+to_folder_contents = True if ('edit' in view.request.get('HTTP_REFERER') and context.Type() not in ['Folder', 'Plone Site']) else False
+after_add = True if ('++add++' in view.request.get('HTTP_REFERER') and context.Type() not in ['Folder', 'Plone Site']) else False
 ?>
 <tal:toEdit tal:condition="toEdit">
     <script>document.location.href="${context/absolute_url}/@@edit";</script>
 </tal:toEdit>
+<tal:to_folder_contents tal:condition="python:to_folder_contents or after_add">
+    <script>document.location.href="${python:context.getParentNode().absolute_url()}/folder_contents";</script>
+</tal:to_folder_contents>	

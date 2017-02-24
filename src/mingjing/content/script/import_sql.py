@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 import sys
@@ -80,11 +81,13 @@ class ImportContents:
         # 建立DB 連線資訊定設定中文編碼utf-8
         db = MySQLdb.connect("localhost","mibdb","mibdb","mibdb",charset='utf8')
         cursor = db.cursor()
-        sql_video = "SELECT * FROM `vo_video` WHERE `CreateTime` > '2017-02-01 00:00:00'"
+        sql_video = "SELECT * FROM `vo_video` WHERE `CreateTime` > '2016-12-01 00:00:00'"
 
         cursor.execute(sql_video)
         old_video = cursor.fetchall()
         count = 0
+        print 'TOTAL: %s' % len(old_video)
+        import pdb; pdb.set_trace()
         for item in old_video:
             old_ID = item[1]
             old_TypeID = item[6]
@@ -133,11 +136,13 @@ class ImportContents:
         # 建立DB 連線資訊定設定中文編碼utf-8
         db = MySQLdb.connect("localhost","mibdb","mibdb","mibdb",charset='utf8')
         cursor = db.cursor()
-        sql_blog = "SELECT * FROM `bg_blog` WHERE `CreateTime` > '2017-02-01 00:00:00'"
+        sql_blog = "SELECT * FROM `bg_blog` WHERE `CreateTime` > '2016-12-01 00:00:00'"
 
         cursor.execute(sql_blog)
         old_blog = cursor.fetchall()
         count = 0
+        print 'TOTAL: %s' % len(old_blog)
+        import pdb; pdb.set_trace()
         for item in old_blog:
             old_BlogID = item[0]
             old_BlogTypeID = item[1]
@@ -189,12 +194,14 @@ class ImportContents:
 #            import pdb;pdb.set_trace()
 
 
-            sql_getNews = "SELECT * FROM `ns_news` WHERE `CreateTime` > '2017-02-01 00:00:00' ORDER BY `ns_news`.`NewsDate` ASC"
+            sql_getNews = "SELECT * FROM `ns_news` WHERE `CreateTime` > '2016-12-01 00:00:00' ORDER BY `ns_news`.`NewsDate` ASC"
             cursor.execute(sql_getNews)
             # 撈取多筆資料
             results = cursor.fetchall()
             # 迴圈撈取資料
             count = 0
+            print 'TOTAL: %s' % len(results)
+            import pdb; pdb.set_trace()
             for record in results:
                 old_NewsId = record[1]
                 old_NewsTypeID = record[5]
