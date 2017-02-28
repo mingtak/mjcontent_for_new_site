@@ -58,6 +58,12 @@ class IOldFields(model.Schema):
         required=False,
     )
 
+    form.mode(oldEbookURL='hidden')
+    oldEbookURL = schema.TextLine(
+        title=_(u"Old Ebook URL"),
+        required=False,
+    )
+
 
 alsoProvides(IFreeContent, IFormFieldProvider)
 alsoProvides(IOriginalUrl, IFormFieldProvider)
@@ -85,6 +91,7 @@ class OldFields(object):
     oldPicturePath = context_property("oldPicturePath")
     oldKeywords = context_property("oldKeywords")
     oldCreateTime = context_property("oldCreateTime")
+    oldEbookURL = context_property("oldEbookURL")
 
 
 class FreeContent(object):

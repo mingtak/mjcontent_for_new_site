@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 
 import sys
@@ -66,11 +65,79 @@ class ImportContents:
             self.importBlog(site_code)
         if dataType == 'news':
             self.importNews(site_code)
-        if dataType == 'mag':
-            self.importMag(site_code)
-
+        if dataType == 'book':
+            self.importBooks(site_code)
         transaction.commit()
         return
+
+
+    def importBooks(self, site_code):
+        # 匯入 出版/書店/電子書刊
+        portal = self.portal
+        request = self.portal.REQUEST
+        alsoProvides(request, IDisableCSRFProtection)
+
+        # 建立DB 連線資訊定設定中文編碼utf-8
+        db = MySQLdb.connect("localhost","mibdb","mibdb","mibdb",charset='utf8')
+        cursor = db.cursor()
+        sql_books = "SELECT * FROM `bk_book` ORDER BY `bk_book`.`CreateTime` ASC"
+
+        cursor.execute(sql_books)
+        old_books = cursor.fetchall()
+        count = 0
+        print 'TOTAL: %s' % len(old_books)
+#        import pdb; pdb.set_trace()
+        for item in old_books:
+            old_ID = item[1]
+            old_TypeID = item[2]
+            if old_TypeID.startswith('A'):
+                if api.content.find(context=portal['book'], id=old_ID):
+                    continue
+                containerFolder = portal['book'][old_TypeID.lower()]
+            if old_TypeID.startswith('E'):
+                if api.content.find(context=portal['ebook'], id=old_ID):
+                    continue
+                containerFolder = portal['ebook'][old_TypeID.lower()]
+            if old_TypeID.startswith('P'):
+                if api.content.find(context=portal['publisher'], id=old_ID):
+                    continue
+                containerFolder = portal['publisher'][old_TypeID.lower()]
+
+            old_Title = item[3]
+            old_PicturePath = 'http://www.mingjingnews.com/MIBM/upimages/Book/%s' % item[23]
+            old_Keywords = item[15]
+            old_Description = item[3]
+            old_CreateTime = item[35]
+            old_ebookURL = item[17]
+            old_RichText = item[16]
+
+            if old_TypeID and containerFolder:
+#                import pdb; pdb.set_trace()
+                newContent = api.content.create(
+                    container=containerFolder,
+                    type='Ebook',
+                    id=old_ID,
+                    title=old_Title,
+                    description=old_Description,
+                    oldPicturePath=old_PicturePath,
+                    oldCreateTime=old_CreateTime,
+                    oldKeywords=old_Keywords,
+                    oldEbookURL=old_ebookURL,
+                    text=RichTextValue(old_RichText),
+                )
+#                old_Keywords.append(portal['video'][old_TypeID.lower()].title)
+#                newContent.setSubject(tuple(old_Keywords))
+
+#                api.content.transition(obj=newContent, transition='publish')
+                newContent.reindexObject()
+                count += 1
+                print '%s: %s/%s' % (count, containerFolder.absolute_url(), old_ID)
+#                break
+                if count % 10 == 0:
+                    transaction.commit()
+            else:continue
+
+        db.close()
 
 
     def importVideo(self, site_code):
@@ -182,6 +249,7 @@ class ImportContents:
         db.close()
 
 
+    # 匯入 新聞 / 雜誌
     def importNews(self, site_code):
         portal = self.portal
         request = self.portal.REQUEST
@@ -210,10 +278,14 @@ class ImportContents:
 #            import pdb; pdb.set_trace()
             for record in results:
                 old_NewsId = record[1]
-                if api.content.find(context=portal['news'], id=old_NewsId):
-                    continue
-
                 old_NewsTypeID = record[5]
+                if old_NewsTypeID.startswith('N'):
+                    if api.content.find(context=portal['news'], id=old_NewsId):
+                        continue
+                elif old_NewsTypeID.startswith('M'):
+                    if api.content.find(context=portal['magazine'], id=old_NewsId):
+                        continue
+
                 old_Title = record[8]
                 old_PicturePath = record[12]
                 old_KeyWord = record[14]
@@ -228,8 +300,15 @@ class ImportContents:
                 if old_NewsTypeID in new_newsType:
 #                    import pdb; pdb.set_trace()
                     try:
+                        if old_NewsTypeID.startswith('N'):
+                            containerFolder = portal['news']
+                        elif old_NewsTypeID.startswith('M'):
+                            containerFolder = portal['magazine']
+                        else:
+                            continue
+
                         newContent = api.content.create(
-                            container=portal['news'][old_NewsTypeID.lower()],
+                            container=containerFolder[old_NewsTypeID.lower()],
                             type='News Item',
                             id=old_NewsId,
                             title=old_Title,
@@ -243,12 +322,12 @@ class ImportContents:
                     except:
                         continue
                     subject = old_KeyWord.split(',')
-                    subject.append(portal['news'][old_NewsTypeID.lower()].title)
+                    subject.append(containerFolder[old_NewsTypeID.lower()].title)
                     newContent.setSubject(tuple(subject))
-                    api.content.transition(obj=newContent, transition='publish')
+#                    api.content.transition(obj=newContent, transition='publish')
                     newContent.reindexObject()
                     count += 1
-                    print count
+                    print '%s: %s, %s' % (count, old_NewsTypeID, old_NewsId)
                     if count % 10 == 0:
                         transaction.commit()
 #                    import pdb; pdb.set_trace()

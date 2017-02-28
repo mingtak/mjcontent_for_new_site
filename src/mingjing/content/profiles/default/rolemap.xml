@@ -3,6 +3,7 @@
   <roles>
     <role name="Paid Member"/>
   </roles>
+
   <permissions>
     <permission name="MingJing News: Paid"
                 acquire="True">
