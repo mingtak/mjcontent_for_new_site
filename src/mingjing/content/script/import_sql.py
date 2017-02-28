@@ -90,6 +90,9 @@ class ImportContents:
         import pdb; pdb.set_trace()
         for item in old_video:
             old_ID = item[1]
+            if api.content.find(context=portal['video'], id=old_ID):
+                continue
+
             old_TypeID = item[6]
             old_Title = item[12]
             old_YoutubeURL = item[14]
@@ -145,6 +148,9 @@ class ImportContents:
         import pdb; pdb.set_trace()
         for item in old_blog:
             old_BlogID = item[0]
+            if api.content.find(context=portal['blog'], id=old_BlogID):
+                continue
+
             old_BlogTypeID = item[1]
             old_Title = item[5]
             old_PicturePath = item[8]
@@ -201,9 +207,12 @@ class ImportContents:
             # 迴圈撈取資料
             count = 0
             print 'TOTAL: %s' % len(results)
-            import pdb; pdb.set_trace()
+#            import pdb; pdb.set_trace()
             for record in results:
                 old_NewsId = record[1]
+                if api.content.find(context=portal['news'], id=old_NewsId):
+                    continue
+
                 old_NewsTypeID = record[5]
                 old_Title = record[8]
                 old_PicturePath = record[12]

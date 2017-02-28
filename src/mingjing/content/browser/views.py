@@ -4,6 +4,8 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone import api
 from datetime import datetime
 import json
+from plone.memoize import ram
+from time import time
 
 
 class ToYoutube(BrowserView):
@@ -21,21 +23,25 @@ class CoverView(BrowserView):
 
     """ TODO: memory cache """
 
+    #@ram.cache(lambda *args: time() // (120))
     def mainSliderNews(self):
         context = self.context
         return api.content.find(Type='News Item', id=context.mainSliderNews.split(), sort_on='modified', sort_order='reverse')
 
 
+    #@ram.cache(lambda *args: time() // (120))
     def youtubes(self):
         portal = api.portal.get()
         return api.content.find(context=portal, Type='Youtube', sort_on='modified', sort_order='reverse')
 
 
+    #@ram.cache(lambda *args: time() // (120))
     def todayNews(self):
         context = self.context
         return api.content.find(Type='News Item', id=context.todayNews.split(), sort_on='modified', sort_order='reverse')
 
 
+    #@ram.cache(lambda *args: time() // (120))
     def tabsNameLists(self):
         portal = api.portal.get()
         context = self.context
@@ -57,6 +63,7 @@ class CoverView(BrowserView):
         return [tabsNameList_1, tabsBrain_1, tabsNameList_2, tabsBrain_2, tabsNameList_3, tabsBrain_3]
 
 
+    #@ram.cache(lambda *args: time() // (120))
     def ebooks(self):
         portal = api.portal.get()
         context = self.context
@@ -66,12 +73,14 @@ class CoverView(BrowserView):
         return [newestBook, hotestBook, eBook]
 
 
+    #@ram.cache(lambda *args: time() // (120))
     def rankingNews(self):
         portal = api.portal.get()
         context = self.context
         return api.content.find(context=portal, Type='News Item', id=context.rankingNews.split(), sort_on='modified', sort_order='reverse')
 
 
+    #@ram.cache(lambda *args: time() // (120))
     def liveProgram(self, jsonString):
         context = self.context
         liveProgram = json.loads(jsonString)
