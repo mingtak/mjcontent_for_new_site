@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 from plone.memoize import ram
 from time import time
+from Products.CMFPlone.utils import safe_unicode
 
 
 class ToYoutube(BrowserView):
@@ -21,24 +22,23 @@ class CoverView(BrowserView):
 
     template = ViewPageTemplateFile("template/cover_view.pt")
 
-    """ TODO: memory cache """
-
     #@ram.cache(lambda *args: time() // (120))
     def mainSliderNews(self):
         context = self.context
-        return api.content.find(Type='News Item', id=context.mainSliderNews.split(), sort_on='modified', sort_order='reverse')
+#        return api.content.find(Type='News Item', id=context.mainSliderNews.split(), sort_on='modified', sort_order='reverse')
+        return api.content.find(Type='News Item', sort_on='created', sort_order='reverse')
 
 
     #@ram.cache(lambda *args: time() // (120))
     def youtubes(self):
         portal = api.portal.get()
-        return api.content.find(context=portal, Type='Youtube', sort_on='modified', sort_order='reverse')
+        return api.content.find(context=portal, Type='Youtube', featured=True, sort_on='created', sort_order='reverse')
 
 
     #@ram.cache(lambda *args: time() // (120))
     def todayNews(self):
-        context = self.context
-        return api.content.find(Type='News Item', id=context.todayNews.split(), sort_on='modified', sort_order='reverse')
+        portal = api.portal.get()
+        return api.content.find(context=portal, Type='News Item', featured=True, sort_on='created', sort_order='reverse')
 
 
     #@ram.cache(lambda *args: time() // (120))
@@ -52,13 +52,14 @@ class CoverView(BrowserView):
         tabsBrain_1, tabsBrain_2 ,tabsBrain_3 = [], [], []
 
         for key in tabsNameList_1:
-            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='modified', sort_order='reverse')
+#            import pdb;pdb.set_trace()
+            brain = api.content.find(context=portal, Type='News Item', keywords=safe_unicode(key), featured=True, sort_on='created', sort_order='reverse')
             tabsBrain_1.append(brain[0:5])
         for key in tabsNameList_2:
-            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='modified', sort_order='reverse')
+            brain = api.content.find(context=portal, Type='News Item', keywords=safe_unicode(key), featured=True, sort_on='created', sort_order='reverse')
             tabsBrain_2.append(brain[0:5])
         for key in tabsNameList_3:
-            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='modified', sort_order='reverse')
+            brain = api.content.find(context=portal, Type='News Item', keywords=safe_unicode(key), featured=True, sort_on='created', sort_order='reverse')
             tabsBrain_3.append(brain[0:5])
         return [tabsNameList_1, tabsBrain_1, tabsNameList_2, tabsBrain_2, tabsNameList_3, tabsBrain_3]
 
@@ -77,14 +78,13 @@ class CoverView(BrowserView):
     def rankingNews(self):
         portal = api.portal.get()
         context = self.context
-        return api.content.find(context=portal, Type='News Item', id=context.rankingNews.split(), sort_on='modified', sort_order='reverse')
+        return api.content.find(context=portal, Type='News Item', featured=True, sort_on='created', sort_order='reverse')
 
 
     #@ram.cache(lambda *args: time() // (120))
     def liveProgram(self, jsonString):
         context = self.context
         liveProgram = json.loads(jsonString)
-#        startTime = datetime.fromtimestamp(liveProgram['startTime'])
         startTime = int(liveProgram['startTime'])
         for item in liveProgram['pl']:
             item['start'] = datetime.fromtimestamp(startTime)
