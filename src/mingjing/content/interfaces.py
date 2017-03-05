@@ -95,4 +95,3 @@ class ICover(Interface):
         description=_(u"Live Program 2"),
         required=False,
     )
-

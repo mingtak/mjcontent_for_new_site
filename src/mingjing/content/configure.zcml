@@ -39,4 +39,6 @@
 
   <!-- Catalog -->
   <adapter name="originalUrl" factory=".catalog.originalUrl_indexer" />
+  <adapter name="featured" factory=".catalog.featured_indexer" />
+  <adapter name="keywords" factory=".catalog.keywords_indexer" />
 </configure>

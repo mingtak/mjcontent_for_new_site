@@ -1,0 +1,3 @@
+<registry>
+  <records interface="mingjing.content.browser.mjnetSetting.IMJNetSetting" />
+</registry>

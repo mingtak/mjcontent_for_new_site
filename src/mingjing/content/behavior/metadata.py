@@ -68,6 +68,7 @@ class IBasic(model.Schema):
         required=True
     )
 
+    directives.mode(description="hidden")
     description = schema.TextLine(
         title=_(u'label_description', default=u'Summary'),
         description=_(
@@ -89,6 +90,7 @@ class IBasic(model.Schema):
 @provider(IFormFieldProvider)
 class ICategorization(model.Schema):
 
+    directives.mode(subjects="hidden")
     subjects = schema.Tuple(
         title=_(u'label_tags', default=u'Tags'),
         description=_(

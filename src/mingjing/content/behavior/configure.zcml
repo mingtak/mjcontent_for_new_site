@@ -14,6 +14,20 @@
     />
 
     <plone:behavior
+        title="featured"
+        description="Featured for content"
+        provides=".behaviors.IFeatured"
+        factory=".behaviors.Featured"
+        />
+
+    <plone:behavior
+        title="keywords"
+        description="Keywords for article"
+        provides=".behaviors.IKeywords"
+        factory=".behaviors.Keywords"
+        />
+
+    <plone:behavior
         title="originalUrl"
         description="News Original URL"
         provides=".behaviors.IOriginalUrl"

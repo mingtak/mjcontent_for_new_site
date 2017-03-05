@@ -86,10 +86,28 @@ class CoverView(BrowserView):
         context = self.context
         liveProgram = json.loads(jsonString)
         startTime = int(liveProgram['startTime'])
+
+        while True:
+            endTime = startTime
+            for item in liveProgram['pl']:
+                endTime += item['during']
+            if datetime.fromtimestamp(endTime) < datetime.now():
+                startTime = endTime + 1
+            else:
+                break
+
         for item in liveProgram['pl']:
             item['start'] = datetime.fromtimestamp(startTime)
             item['end'] = datetime.fromtimestamp(startTime+item['during'])
             startTime += item['during']
+
+        while True:
+            if liveProgram['pl'][0]['end'] < datetime.now():
+                tmp = liveProgram['pl'].pop(0)
+                liveProgram['pl'].append(tmp)
+            else:
+                break
+
         return liveProgram['pl']
 
 

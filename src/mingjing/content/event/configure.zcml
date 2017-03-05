@@ -3,10 +3,33 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="mingjingnews.content">
 
+
+    <subscriber
+        for="Products.PlonePAS.events.UserLoggedInEvent"
+        handler=".event.userLoginToFolderContents"
+    />
+
     <subscriber
         for="* zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".event.moveContentToTop"
     />
+
+
+    <subscriber
+        for="* zope.lifecycleevent.interfaces.IObjectAddedEvent"
+        handler=".event.toFolderContents"
+    />
+
+    <subscriber
+        for="* zope.lifecycleevent.interfaces.IObjectAddedEvent"
+        handler=".event.updateDescription"
+    />
+
+    <subscriber
+        for="* zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+        handler=".event.updateDescription"
+    />
+
 
 </configure>
 

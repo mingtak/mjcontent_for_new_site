@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2017-02-24 03:05+0000\n"
+"POT-Creation-Date: 2017-03-05 06:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,15 +25,15 @@ msgstr ""
 msgid "Add Tabs Portlet"
 msgstr ""
 
-#: ./behavior/configure.zcml:46
+#: ./behavior/configure.zcml:60
 msgid "Adds keywords(without language) fields."
 msgstr ""
 
-#: ./behavior/configure.zcml:56
+#: ./behavior/configure.zcml:70
 msgid "Adds title and description fields."
 msgstr ""
 
-#: ./behavior/configure.zcml:56
+#: ./behavior/configure.zcml:70
 msgid "Basic metadata"
 msgstr ""
 
@@ -41,8 +41,12 @@ msgstr ""
 msgid "Blog"
 msgstr ""
 
-#: ./behavior/configure.zcml:46
+#: ./behavior/configure.zcml:60
 msgid "Categorization"
+msgstr ""
+
+#: ./behavior/behaviors.py:28
+msgid "Checked it for featured."
 msgstr ""
 
 #: ./profiles/default/types/Cover.xml
@@ -71,13 +75,33 @@ msgstr ""
 msgid "Edit Tabs Portlet"
 msgstr ""
 
-#: ./behavior/behaviors.py:24
-#: ./behavior/configure.zcml:28
+#: ./behavior/behaviors.py:27
+msgid "Featured"
+msgstr ""
+
+#: ./behavior/configure.zcml:21
+msgid "Featured for content"
+msgstr ""
+
+#: ./behavior/behaviors.py:47
+#: ./behavior/configure.zcml:42
 msgid "Free Content"
 msgstr ""
 
 #: ./configure.zcml:25
 msgid "Installs the mingjing.content add-on."
+msgstr ""
+
+#: ./behavior/behaviors.py:38
+msgid "Keywords"
+msgstr ""
+
+#: ./behavior/configure.zcml:28
+msgid "Keywords for article"
+msgstr ""
+
+#: ./behavior/behaviors.py:39
+msgid "Keywords for article, separate use ','"
 msgstr ""
 
 #: ./interfaces.py:87
@@ -88,6 +112,14 @@ msgstr ""
 msgid "Live Program 2"
 msgstr ""
 
+#: ./browser/mjnetSetting.py:32
+msgid "MJNet Setting"
+msgstr ""
+
+#: ./profiles/default/controlpanel.xml
+msgid "MJNews setup"
+msgstr ""
+
 #: ./interfaces.py:49
 msgid "Main Slider News"
 msgstr ""
@@ -96,27 +128,39 @@ msgstr ""
 msgid "Member"
 msgstr ""
 
+#: ./browser/mjnetSetting.py:14
+msgid "Mysql Connection Setting"
+msgstr ""
+
 #: ./behavior/configure.zcml:14
 msgid "Named content id from time stamp"
 msgstr ""
 
-#: ./behavior/configure.zcml:21
+#: ./behavior/configure.zcml:35
 msgid "News Original URL"
 msgstr ""
 
-#: ./behavior/behaviors.py:52
+#: ./behavior/behaviors.py:79
 msgid "Old Create Time"
 msgstr ""
 
-#: ./behavior/behaviors.py:47
+#: ./behavior/behaviors.py:85
+msgid "Old Ebook URL"
+msgstr ""
+
+#: ./behavior/behaviors.py:73
 msgid "Old Keywords"
 msgstr ""
 
-#: ./behavior/behaviors.py:42
+#: ./behavior/behaviors.py:67
 msgid "Old Picture Path"
 msgstr ""
 
-#: ./behavior/behaviors.py:34
+#: ./browser/mjnetSetting.py:20
+msgid "Old Site Mysql Connection Setting"
+msgstr ""
+
+#: ./behavior/behaviors.py:58
 msgid "Original URL"
 msgstr ""
 
@@ -195,101 +239,113 @@ msgid "Youtube URL"
 msgstr ""
 
 #. Default: "Expiration date must be after publishing date."
-#: ./behavior/metadata.py:162
+#: ./behavior/metadata.py:164
 msgid "error_expiration_must_be_after_effective_date"
 msgstr ""
 
 #. Default: "Invalid effective or expires date"
-#: ./behavior/metadata.py:125
+#: ./behavior/metadata.py:127
 msgid "error_invalid_publication"
 msgstr ""
 
-#: ./behavior/configure.zcml:28
+#: ./behavior/configure.zcml:21
+msgid "featured"
+msgstr ""
+
+#: ./behavior/configure.zcml:42
 msgid "freeContent"
 msgstr ""
 
 #. Default: "The names of people that have contributed to this item. Each contributor should be on a separate line."
-#: ./behavior/metadata.py:204
+#: ./behavior/metadata.py:206
 msgid "help_contributors"
 msgstr ""
 
 #. Default: "Copyright statement or other rights information on this item."
-#: ./behavior/metadata.py:221
+#: ./behavior/metadata.py:223
 msgid "help_copyrights"
 msgstr ""
 
 #. Default: "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first."
-#: ./behavior/metadata.py:186
+#: ./behavior/metadata.py:188
 msgid "help_creators"
 msgstr ""
 
 #. Default: "Used in item listings and search results."
-#: ./behavior/metadata.py:73
+#: ./behavior/metadata.py:74
 msgid "help_description"
 msgstr ""
 
 #. Default: "If this date is in the future, the content will not show up in listings and searches until this date."
-#: ./behavior/metadata.py:140
+#: ./behavior/metadata.py:142
 msgid "help_effective_date"
 msgstr ""
 
 #. Default: "When this date is reached, the content will nolonger be visible in listings and searches."
-#: ./behavior/metadata.py:150
+#: ./behavior/metadata.py:152
 msgid "help_expiration_date"
 msgstr ""
 
 #. Default: "Tags are commonly used for ad-hoc organization of content."
-#: ./behavior/metadata.py:94
+#: ./behavior/metadata.py:96
 msgid "help_tags"
 msgstr ""
 
+#: ./browser/mjnetSetting.py:15
+msgid "host,id,username,dbname"
+msgstr ""
+
+#: ./behavior/configure.zcml:28
+msgid "keywords"
+msgstr ""
+
 #. Default: "Contributors"
-#: ./behavior/metadata.py:203
+#: ./behavior/metadata.py:205
 msgid "label_contributors"
 msgstr ""
 
 #. Default: "Rights"
-#: ./behavior/metadata.py:220
+#: ./behavior/metadata.py:222
 msgid "label_copyrights"
 msgstr ""
 
 #. Default: "Creators"
-#: ./behavior/metadata.py:185
+#: ./behavior/metadata.py:187
 msgid "label_creators"
 msgstr ""
 
 #. Default: "Summary"
-#: ./behavior/metadata.py:72
+#: ./behavior/metadata.py:73
 msgid "label_description"
 msgstr ""
 
 #. Default: "Publishing Date"
-#: ./behavior/metadata.py:139
+#: ./behavior/metadata.py:141
 msgid "label_effective_date"
 msgstr ""
 
 #. Default: "Expiration Date"
-#: ./behavior/metadata.py:149
+#: ./behavior/metadata.py:151
 msgid "label_expiration_date"
 msgstr ""
 
 #. Default: "Language"
-#: ./behavior/metadata.py:111
+#: ./behavior/metadata.py:113
 msgid "label_language"
 msgstr ""
 
 #. Default: "Dates"
-#: ./behavior/metadata.py:134
+#: ./behavior/metadata.py:136
 msgid "label_schema_dates"
 msgstr ""
 
 #. Default: "Ownership"
-#: ./behavior/metadata.py:177
+#: ./behavior/metadata.py:179
 msgid "label_schema_ownership"
 msgstr ""
 
 #. Default: "Tags"
-#: ./behavior/metadata.py:93
+#: ./behavior/metadata.py:95
 msgid "label_tags"
 msgstr ""
 
@@ -310,10 +366,10 @@ msgstr ""
 msgid "namedFromTimeStamp"
 msgstr ""
 
-#: ./behavior/configure.zcml:35
+#: ./behavior/configure.zcml:49
 msgid "oldFields"
 msgstr ""
 
-#: ./behavior/configure.zcml:21
+#: ./behavior/configure.zcml:35
 msgid "originalUrl"
 msgstr ""

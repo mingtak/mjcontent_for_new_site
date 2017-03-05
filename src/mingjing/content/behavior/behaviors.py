@@ -19,6 +19,28 @@ import random
 from plone.directives import form
 
 
+class IFeatured(model.Schema):
+    """ Add featured field """
+
+    form.mode(featured='hidden')
+    featured = schema.Bool(
+        title=_(u"Featured"),
+        description=_(u"Checked it for featured."),
+        default=False,
+        required=False,
+    )
+
+
+class IKeywords(model.Schema):
+    """ Add keywords for Article """
+
+    keywords = schema.TextLine(
+        title=_(u"Keywords"),
+        description=_(u"Keywords for article, separate use ','"),
+        required=False,
+    )
+
+
 class IFreeContent(model.Schema):
     """ Add RichText for Free Content """
     freeContent = RichText(
@@ -68,6 +90,8 @@ class IOldFields(model.Schema):
 alsoProvides(IFreeContent, IFormFieldProvider)
 alsoProvides(IOriginalUrl, IFormFieldProvider)
 alsoProvides(IOldFields, IFormFieldProvider)
+alsoProvides(IKeywords, IFormFieldProvider)
+alsoProvides(IFeatured, IFormFieldProvider)
 
 
 def context_property(name):
@@ -94,6 +118,17 @@ class OldFields(object):
     oldEbookURL = context_property("oldEbookURL")
 
 
+class Featured(object):
+    implements(IFeatured)
+    adapts(IDexterityContent)
+
+    def __init__(self,context):
+        self.context = context
+
+    # -*- Your behavior property setters & getters here ... -*-
+    featured = context_property("featured")
+
+
 class FreeContent(object):
     implements(IFreeContent)
     adapts(IDexterityContent)
@@ -103,6 +138,17 @@ class FreeContent(object):
 
     # -*- Your behavior property setters & getters here ... -*-
     freeContent = context_property("freeContent")
+
+
+class Keywords(object):
+    implements(IKeywords)
+    adapts(IDexterityContent)
+
+    def __init__(self,context):
+        self.context = context
+
+    # -*- Your behavior property setters & getters here ... -*-
+    keywords = context_property("keywords")
 
 
 class OriginalUrl(object):

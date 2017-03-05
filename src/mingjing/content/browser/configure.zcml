@@ -80,4 +80,18 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      name="set_featured"
+      for="*"
+      class=".mingjing.SetFeatured"
+      permission="cmf.ModifyPortalContent"
+      />
+
+  <!-- configlet -->
+  <browser:page
+    name="mjnetSettingControlPanel"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    permission="cmf.ManagePortal"
+    class=".mjnetSetting.MJNetSettingControlPanelView"
+    />
 </configure>

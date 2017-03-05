@@ -30,6 +30,7 @@ news_site_code = {
     'sql':'sql'
 }
 
+queryTime = (DateTime()-0.2).strftime('%Y-%m-%d %H:00:00')
 logger = logging.getLogger('Import News')
 
 
@@ -51,6 +52,10 @@ class ImportContents:
         self.portal.setupCurrentSkin(self.portal.REQUEST)
 
         self.dataType = dataType
+
+        oldDBValue = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.oldSiteDB')
+#        oldDBValue = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.mysqlSetting')
+        self.host, self.port, self.user, self.passwd, self.db, self.charset = oldDBValue.split(',')
 
 
     def getDocs(self, site_code, dataType):
@@ -78,10 +83,10 @@ class ImportContents:
         alsoProvides(request, IDisableCSRFProtection)
 
         # 建立DB 連線資訊定設定中文編碼utf-8
-        db = MySQLdb.connect("localhost","mibdb","mibdb","mibdb",charset='utf8')
+        db = MySQLdb.connect(host=self.host, port=int(self.port), user=self.user, passwd=self.passwd, db=self.db, charset=self.charset)
         cursor = db.cursor()
-        sql_books = "SELECT * FROM `bk_book` ORDER BY `bk_book`.`CreateTime` ASC"
-
+#        sql_books = "SELECT * FROM `bk_book` ORDER BY `bk_book`.`CreateTime` ASC"
+        sql_books = "SELECT * FROM `bk_book` WHERE `CreateTime` > '%s' ORDER BY `bk_book`.`CreateTime` ASC " % queryTime
         cursor.execute(sql_books)
         old_books = cursor.fetchall()
         count = 0
@@ -121,7 +126,8 @@ class ImportContents:
                     description=old_Description,
                     oldPicturePath=old_PicturePath,
                     oldCreateTime=old_CreateTime,
-                    oldKeywords=old_Keywords,
+#                    oldKeywords=old_Keywords,
+                    keywords=old_Keywords,
                     oldEbookURL=old_ebookURL,
                     text=RichTextValue(old_RichText),
                 )
@@ -146,15 +152,15 @@ class ImportContents:
         alsoProvides(request, IDisableCSRFProtection)
 
         # 建立DB 連線資訊定設定中文編碼utf-8
-        db = MySQLdb.connect("localhost","mibdb","mibdb","mibdb",charset='utf8')
+        db = MySQLdb.connect(host=self.host, port=int(self.port), user=self.user, passwd=self.passwd, db=self.db, charset=self.charset)
         cursor = db.cursor()
-        sql_video = "SELECT * FROM `vo_video` WHERE `CreateTime` > '2016-12-01 00:00:00'"
+        sql_video = "SELECT * FROM `vo_video` WHERE `CreateTime` > '%s' ORDER BY `vo_video`.`CreateTime` ASC " % queryTime
 
         cursor.execute(sql_video)
         old_video = cursor.fetchall()
         count = 0
         print 'TOTAL: %s' % len(old_video)
-        import pdb; pdb.set_trace()
+#        import pdb; pdb.set_trace()
         for item in old_video:
             old_ID = item[1]
             if api.content.find(context=portal['video'], id=old_ID):
@@ -180,7 +186,8 @@ class ImportContents:
                     description=old_Description,
                     oldPicturePath=old_PicturePath,
                     oldCreateTime=old_CreateTime,
-                    oldKeywords=old_Keywords,
+#                    oldKeywords=old_Keywords,
+                    keywords=old_Keywords,
                     text=RichTextValue(old_RichText),
                     youtubeURL=old_YoutubeURL,
                 )
@@ -204,15 +211,15 @@ class ImportContents:
         alsoProvides(request, IDisableCSRFProtection)
 
         # 建立DB 連線資訊定設定中文編碼utf-8
-        db = MySQLdb.connect("localhost","mibdb","mibdb","mibdb",charset='utf8')
+        db = MySQLdb.connect(host=self.host, port=int(self.port), user=self.user, passwd=self.passwd, db=self.db, charset=self.charset)
         cursor = db.cursor()
-        sql_blog = "SELECT * FROM `bg_blog` WHERE `CreateTime` > '2016-12-01 00:00:00'"
+        sql_blog = "SELECT * FROM `bg_blog` WHERE `CreateTime` > '%s' ORDER BY `bg_blog`.`CreateTime` ASC " % queryTime
 
         cursor.execute(sql_blog)
         old_blog = cursor.fetchall()
         count = 0
         print 'TOTAL: %s' % len(old_blog)
-        import pdb; pdb.set_trace()
+#        import pdb; pdb.set_trace()
         for item in old_blog:
             old_BlogID = item[0]
             if api.content.find(context=portal['blog'], id=old_BlogID):
@@ -228,19 +235,22 @@ class ImportContents:
             cursor.execute(sql_blogContent)
             old_RichText = cursor.fetchall()[0][1]
             if old_BlogTypeID and portal['blog'].get(old_BlogTypeID):
-                newContent = api.content.create(
-                    container=portal['blog'].get(old_BlogTypeID),
-                    type='Blog',
-                    id=old_BlogID,
-                    title=old_Title,
-                    description=old_ArticleContents,
-                    oldPicturePath=old_PicturePath,
-                    oldCreateTime=old_CreateTime,
-                    text=RichTextValue(old_RichText),
-                )
-                api.content.transition(obj=newContent, transition='publish')
-                newContent.reindexObject()
-                count += 1
+                try:
+                    newContent = api.content.create(
+                        container=portal['blog'].get(old_BlogTypeID),
+                        type='Blog',
+                        id=old_BlogID,
+                        title=old_Title,
+                        description=old_ArticleContents,
+                        oldPicturePath=old_PicturePath,
+                        oldCreateTime=old_CreateTime,
+                        text=RichTextValue(old_RichText),
+                    )
+                    api.content.transition(obj=newContent, transition='publish')
+                    newContent.reindexObject()
+                    count += 1
+                except:
+                    continue
                 print count
                 if count % 10 == 0:
                     transaction.commit()
@@ -256,7 +266,7 @@ class ImportContents:
         alsoProvides(request, IDisableCSRFProtection)
         try:
             # 建立DB 連線資訊定設定中文編碼utf-8
-            db = MySQLdb.connect("localhost","mibdb","mibdb","mibdb",charset='utf8')
+            db = MySQLdb.connect(host=self.host, port=int(self.port), user=self.user, passwd=self.passwd, db=self.db, charset=self.charset)
             sql_newsType = "SELECT * FROM `ns_type`"
             # 執行SQL statement
             cursor = db.cursor()
@@ -266,16 +276,16 @@ class ImportContents:
             for item in old_newsType:
                 new_newsType[item[1]] = item[2]
 #            import pdb;pdb.set_trace()
-
-
-            sql_getNews = "SELECT * FROM `ns_news` WHERE `CreateTime` > '2016-12-01 00:00:00' ORDER BY `ns_news`.`NewsDate` ASC"
+            sql_getNews = "SELECT * FROM `ns_news` WHERE `CreateTime` > '%s' ORDER BY `ns_news`.`NewsDate` ASC" % queryTime
+            print DateTime()
             cursor.execute(sql_getNews)
             # 撈取多筆資料
             results = cursor.fetchall()
             # 迴圈撈取資料
+            print DateTime()
             count = 0
             print 'TOTAL: %s' % len(results)
-#            import pdb; pdb.set_trace()
+            import pdb; pdb.set_trace()
             for record in results:
                 old_NewsId = record[1]
                 old_NewsTypeID = record[5]
@@ -314,16 +324,17 @@ class ImportContents:
                             title=old_Title,
                             description=old_Title,
                             oldPicturePath=old_PicturePath,
-                            oldKeywords=old_KeyWord,
+#                            oldKeywords=old_KeyWord,
+                            keywords=old_KeyWord,
                             oldCreateTime=old_CreateTime,
                             freeContent=RichTextValue(old_NewsContents),
                             text=RichTextValue(old_NewsContents),
                         )
                     except:
                         continue
-                    subject = old_KeyWord.split(',')
-                    subject.append(containerFolder[old_NewsTypeID.lower()].title)
-                    newContent.setSubject(tuple(subject))
+#                    subject = old_KeyWord.split(',')
+#                    subject.append(containerFolder[old_NewsTypeID.lower()].title)
+#                    newContent.setSubject(tuple(subject))
 #                    api.content.transition(obj=newContent, transition='publish')
                     newContent.reindexObject()
                     count += 1
