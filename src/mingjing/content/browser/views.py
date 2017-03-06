@@ -19,6 +19,30 @@ class ToYoutube(BrowserView):
         return
 
 
+class YoutubeView(BrowserView):
+
+    template = ViewPageTemplateFile("template/youtube_view.pt")
+
+    def __call__(self):
+        return self.template()
+
+
+class BlogView(BrowserView):
+
+    template = ViewPageTemplateFile("template/blog_view.pt")
+
+    def __call__(self):
+        return self.template()
+
+
+class EbookView(BrowserView):
+
+    template = ViewPageTemplateFile("template/ebook_view.pt")
+
+    def __call__(self):
+        return self.template()
+
+
 class CoverView(BrowserView):
 
     template = ViewPageTemplateFile("template/cover_view.pt")

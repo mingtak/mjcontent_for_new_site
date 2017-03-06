@@ -67,6 +67,27 @@
       />
 
   <browser:page
+      name="ebook_view"
+      for="mingjing.content.interfaces.IEbook"
+      class=".views.EbookView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="blog_view"
+      for="mingjing.content.interfaces.IBlog"
+      class=".views.BlogView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="youtube_view"
+      for="mingjing.content.interfaces.IYoutube"
+      class=".views.YoutubeView"
+      permission="zope2.View"
+      />
+
+  <browser:page
       name="to_youtube"
       for="mingjing.content.interfaces.IYoutube"
       class=".views.ToYoutube"
