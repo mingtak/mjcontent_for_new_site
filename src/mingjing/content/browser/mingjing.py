@@ -9,6 +9,8 @@ from DateTime import DateTime
 import transaction
 from .views import CoverView
 
+LIMIT = 20
+
 
 class MingjingFolder(BrowserView):
 
@@ -117,10 +119,40 @@ class Ranking(BrowserView):
         for item in results:
             uids.append(item[0])
 
-        self.brain = api.content.find(context=self.portal, UID=uids)
+        self.brain = api.content.find(context=self.portal, UID=uids, sort_limit=LIMIT)[:LIMIT]
         db.close()
         return self.template()
 
 
 class RssRanking(Ranking):
     template = ViewPageTemplateFile('template/rss_ranking.pt')
+
+
+class HotHits(BrowserView):
+
+    def __call__(self):
+        portal = api.portal.get()
+        request = self.request
+
+        dbSetting = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.mysqlSetting')
+        host, port, userName, password, dbName, charset = dbSetting.split(',')
+        port = int(port)
+        db = MySQLdb.connect(host=host, port=port, user=userName, passwd=password, db=dbName, charset=charset)
+        cursor = db.cursor()
+
+        range = [1, 2, 3, 7, 30]
+        brain = []
+        for date in range:
+            startDate = DateTime() - date
+            sqlStr = "SELECT `uid` FROM `mj_counter` WHERE `created` > '%s' ORDER BY `mj_counter`.`viewCounter` DESC LIMIT 10" % \
+                     startDate.strftime('%Y/%m/%d %H:%M:%S')
+            cursor.execute(sqlStr)
+            results = cursor.fetchall()
+            uids = []
+            for item in results:
+                uids.append(item[0])
+
+            brain.append(api.content.find(context=portal, UID=uids, sort_limit=LIMIT)[:LIMIT])
+#        import pdb; pdb.set_trace()
+        return brain
+

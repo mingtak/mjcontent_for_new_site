@@ -101,6 +101,13 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      name="hot_hits"
+      for="*"
+      class=".mingjing.HotHits"
+      permission="zope2.View"
+      />
+
   <!-- configlet -->
   <browser:page
     name="mjnetSettingControlPanel"
