@@ -49,4 +49,13 @@
       permission="zope2.View"
     />
 
+    <browser:viewlet
+      name="view_counter"
+      for="plone.app.contenttypes.interfaces.INewsItem"
+      manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+      template="template/view_counter.pt"
+      class=".viewlet.ViewCounter"
+      permission="zope2.View"
+    />
+
 </configure>

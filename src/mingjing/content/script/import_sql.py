@@ -285,7 +285,7 @@ class ImportContents:
             print DateTime()
             count = 0
             print 'TOTAL: %s' % len(results)
-            import pdb; pdb.set_trace()
+#            import pdb; pdb.set_trace()
             for record in results:
                 old_NewsId = record[1]
                 old_NewsTypeID = record[5]

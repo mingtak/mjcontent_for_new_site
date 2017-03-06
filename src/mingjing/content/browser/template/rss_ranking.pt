@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"
+                   xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <channel>
+
+
+    <atom:link rel="self" type="application/rss+xml" href="${view/request/URL}?${view/request/QUERY_STRING}" />
+    <tal:title switch="python:view.request.form.get('range', '1d')">
+        <title tal:case="string:2d">瀏覽排行-48小時</title>
+        <title tal:case="string:3d">瀏覽排行-72小時</title>
+        <title tal:case="string:w">瀏覽排行-一周</title>
+        <title tal:case="string:m">瀏覽排行-一月</title>
+        <title tal:case="default">瀏覽排行-24小時</title>
+    </tal:title>
+    <link>${view/portal/absolute_url}/news/ranking?${view/request/QUERY_STRING}</link>
+    <description></description>
+
+    <language>zh-tw</language>
+    <copyright></copyright>
+    <generator>明鏡網</generator>
+    <item tal:repeat="item view/brain">
+      <title>${item/Title}</title>
+      <description>${item/Description}</description>
+      <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/">
+          <![CDATA[
+          ]]>
+      </content:encoded>
+      <pubDate>${item/created}</pubDate>
+      <guid>${item/getURL}</guid>
+    </item>
+
+
+
+  </channel>
+</rss>

@@ -87,6 +87,20 @@
       permission="cmf.ModifyPortalContent"
       />
 
+  <browser:page
+      name="ranking"
+      for="*"
+      class=".mingjing.Ranking"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      name="rss_ranking"
+      for="*"
+      class=".mingjing.RssRanking"
+      permission="zope2.View"
+      />
+
   <!-- configlet -->
   <browser:page
     name="mjnetSettingControlPanel"

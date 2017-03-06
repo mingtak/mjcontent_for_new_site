@@ -2,8 +2,10 @@
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone import api
+import MySQLdb
 import json
 from datetime import datetime
+from DateTime import DateTime
 import transaction
 from .views import CoverView
 
@@ -78,3 +80,47 @@ class SetFeatured(BrowserView):
         transaction.commit()
         return
 
+
+class Ranking(BrowserView):
+    template = ViewPageTemplateFile('template/ranking.pt')
+
+    def __call__(self):
+
+        self.portal = api.portal.get()
+        request = self.request
+
+        dbSetting = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.mysqlSetting')
+        host, port, userName, password, dbName, charset = dbSetting.split(',')
+        port = int(port)
+        db = MySQLdb.connect(host=host, port=port, user=userName, passwd=password, db=dbName, charset=charset)
+        cursor = db.cursor()
+
+        range = request.form.get('range', '1d')
+        if range == '1d':
+            range = DateTime() - 1
+        elif range == '2d':
+            range = DateTime() - 2
+        elif range == '3d':
+            range = DateTime() - 3
+        elif range == 'w':
+            range = DateTime() - 7
+        elif range == 'm':
+            range = DateTime() - 30
+        else:
+            range = DateTime() - 1
+
+        sqlStr = "SELECT `uid` FROM `mj_counter` WHERE `created` > '%s' ORDER BY `mj_counter`.`viewCounter` DESC LIMIT 20" % \
+                 range.strftime('%Y/%m/%d %H:%M:%S')
+        cursor.execute(sqlStr)
+        results = cursor.fetchall()
+        uids = []
+        for item in results:
+            uids.append(item[0])
+
+        self.brain = api.content.find(context=self.portal, UID=uids)
+        db.close()
+        return self.template()
+
+
+class RssRanking(Ranking):
+    template = ViewPageTemplateFile('template/rss_ranking.pt')
