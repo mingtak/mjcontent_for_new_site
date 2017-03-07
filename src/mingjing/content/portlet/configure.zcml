@@ -13,5 +13,14 @@
         editview=".tabs.EditForm"
         />
 
+    <plone:portlet
+        name="mingjing.content.portlet.EmbedHTML"
+        interface=".embed.IEmbedHTML"
+        assignment=".embed.Assignment"
+        renderer=".embed.Renderer"
+        addview=".embed.AddForm"
+        editview=".embed.EditForm"
+        />
+
 </configure>
 

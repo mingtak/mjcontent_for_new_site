@@ -108,6 +108,18 @@ class Ranking(BrowserView):
             range = DateTime() - 7
         elif range == 'm':
             range = DateTime() - 30
+        elif range == '12h':
+            range = DateTime() - 0.5
+        elif range == 'newest':
+            range = DateTime() - 0.3
+        elif range == 'head':
+            range = DateTime() - 1.5
+        elif range == 'editor':
+            range = DateTime() - 2.5
+        elif range == 'hot':
+            range = DateTime() - 0.8
+        elif range == 'world':
+            range = DateTime() - 5
         else:
             range = DateTime() - 1
 
@@ -140,7 +152,7 @@ class HotHits(BrowserView):
         db = MySQLdb.connect(host=host, port=port, user=userName, passwd=password, db=dbName, charset=charset)
         cursor = db.cursor()
 
-        range = [1, 2, 3, 7, 30]
+        range = [0.5, 1, 2, 3, 7, 30]
         brain = []
         for date in range:
             startDate = DateTime() - date

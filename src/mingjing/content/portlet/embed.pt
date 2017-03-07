@@ -1,0 +1,12 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      tal:omit-tag="">
+<div class="widget"
+     i18n:domain="mingjing.content">
+
+<p class="idget-title" tal:condition="view/data/text">${view/data/text}</p>
+<div tal:condition="view/data/embedCode" tal:replace="structure view/data/embedCode" />
+</div>
+</html>
+

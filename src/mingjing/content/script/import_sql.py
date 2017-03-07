@@ -26,11 +26,10 @@ import MySQLdb
 # mapping: sys.argv[3] is portal_name, sys.argv[4] is admin_id, sys.argv[5] is news_site_code
 #          sys.argv[6] is dataType, 'xml', 'html' ...
 
-news_site_code = {
-    'sql':'sql'
-}
+news_site_code = { 'sql':'sql' }
+DATERANGE = 1
 
-queryTime = (DateTime()-0.2).strftime('%Y-%m-%d %H:00:00')
+queryTime = (DateTime()-DATERANGE).strftime('%Y-%m-%d %H:00:00')
 logger = logging.getLogger('Import News')
 
 
@@ -58,25 +57,42 @@ class ImportContents:
         self.host, self.port, self.user, self.passwd, self.db, self.charset = oldDBValue.split(',')
 
 
-    def getDocs(self, site_code, dataType):
+    def getImage(self, url):
+        try:
+            #直接從ip去捉
+            if 'www.mingjingnews.com' in url:
+                imgUrl = url.replace('www.mingjingnews.com', self.host)
+            elif 'mingjingnews.com' in url:
+                imgUrl = url.replace('mingjingnews.com', self.host)
+            else:
+                imgUrl = url
+            imgRaw = urllib2.urlopen(imgUrl, timeout=2)
+            img = imgRaw.read()
+            return namedfile.NamedBlobImage(data=img, filename=u'image.png')
+        except:
+            print 'getImage Error: %s' % imgUrl
+            return
+
+
+    def getDocs(self, site_code, dataType, isOld):
         portal = self.portal
         request = self.portal.REQUEST
         catalog = portal.portal_catalog
         alsoProvides(request, IDisableCSRFProtection)
 
         if dataType == 'video':
-            self.importVideo(site_code)
+            self.importVideo(site_code, isOld)
         if dataType == 'blog':
-            self.importBlog(site_code)
+            self.importBlog(site_code, isOld)
         if dataType == 'news':
-            self.importNews(site_code)
+            self.importNews(site_code, isOld)
         if dataType == 'book':
-            self.importBooks(site_code)
+            self.importBooks(site_code, isOld)
         transaction.commit()
         return
 
 
-    def importBooks(self, site_code):
+    def importBooks(self, site_code, isOld):
         # 匯入 出版/書店/電子書刊
         portal = self.portal
         request = self.portal.REQUEST
@@ -135,6 +151,10 @@ class ImportContents:
 #                newContent.setSubject(tuple(old_Keywords))
 
 #                api.content.transition(obj=newContent, transition='publish')
+                oldImage = self.getImage(old_PicturePath)
+                if oldImage:
+                    newContent.image = oldImage
+
                 newContent.reindexObject()
                 count += 1
                 print '%s: %s/%s' % (count, containerFolder.absolute_url(), old_ID)
@@ -146,7 +166,7 @@ class ImportContents:
         db.close()
 
 
-    def importVideo(self, site_code):
+    def importVideo(self, site_code, isOld):
         portal = self.portal
         request = self.portal.REQUEST
         alsoProvides(request, IDisableCSRFProtection)
@@ -193,6 +213,9 @@ class ImportContents:
                 )
 #                old_Keywords.append(portal['video'][old_TypeID.lower()].title)
 #                newContent.setSubject(tuple(old_Keywords))
+                oldImage = self.getImage(old_PicturePath)
+                if oldImage:
+                    newContent.image = oldImage
 
                 api.content.transition(obj=newContent, transition='publish')
                 newContent.reindexObject()
@@ -205,7 +228,7 @@ class ImportContents:
         db.close()
 
 
-    def importBlog(self, site_code):
+    def importBlog(self, site_code, isOld):
         portal = self.portal
         request = self.portal.REQUEST
         alsoProvides(request, IDisableCSRFProtection)
@@ -247,6 +270,11 @@ class ImportContents:
                         text=RichTextValue(old_RichText),
                     )
                     api.content.transition(obj=newContent, transition='publish')
+
+                    oldImage = self.getImage(old_PicturePath)
+                    if oldImage:
+                        newContent.image = oldImage
+
                     newContent.reindexObject()
                     count += 1
                 except:
@@ -260,7 +288,7 @@ class ImportContents:
 
 
     # 匯入 新聞 / 雜誌
-    def importNews(self, site_code):
+    def importNews(self, site_code, isOld):
         portal = self.portal
         request = self.portal.REQUEST
         alsoProvides(request, IDisableCSRFProtection)
@@ -275,8 +303,22 @@ class ImportContents:
             new_newsType = {}
             for item in old_newsType:
                 new_newsType[item[1]] = item[2]
-#            import pdb;pdb.set_trace()
-            sql_getNews = "SELECT * FROM `ns_news` WHERE `CreateTime` > '%s' ORDER BY `ns_news`.`NewsDate` ASC" % queryTime
+
+            sql_getNews = ''
+            if isOld == 'old':
+                while True:
+                    for folderItem in portal['news'].getChildNodes():
+                        if not folderItem.getChildNodes():
+                            print 'id: %s' % folderItem.id
+                            sql_getNews = "SELECT * FROM `ns_news` WHERE `NewsTypeID` = '%s' AND `CreateTime` > '2014-01-01 00:00:00' ORDER BY `CreateTime` DESC" % folderItem.id
+                            break
+                    break
+            else:
+                sql_getNews = "SELECT * FROM `ns_news` WHERE `CreateTime` > '%s' ORDER BY `ns_news`.`NewsDate` ASC" % queryTime
+
+            if not sql_getNews:
+                return
+#            import pdb; pdb.set_trace()
             print DateTime()
             cursor.execute(sql_getNews)
             # 撈取多筆資料
@@ -286,6 +328,11 @@ class ImportContents:
             count = 0
             print 'TOTAL: %s' % len(results)
 #            import pdb; pdb.set_trace()
+
+            if isOld == 'old':
+                results = results[:20]
+#                import pdb; pdb.set_trace()
+
             for record in results:
                 old_NewsId = record[1]
                 old_NewsTypeID = record[5]
@@ -336,7 +383,14 @@ class ImportContents:
 #                    subject.append(containerFolder[old_NewsTypeID.lower()].title)
 #                    newContent.setSubject(tuple(subject))
 #                    api.content.transition(obj=newContent, transition='publish')
+
+                    # import Image
+                    oldImage = self.getImage(old_PicturePath)
+                    if oldImage:
+                        newContent.image = oldImage
+
                     newContent.reindexObject()
+
                     count += 1
                     print '%s: %s, %s' % (count, old_NewsTypeID, old_NewsId)
                     if count % 10 == 0:
@@ -350,7 +404,7 @@ class ImportContents:
 
 
 instance = ImportContents(sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
-instance.getDocs(sys.argv[5], sys.argv[6])
+instance.getDocs(sys.argv[5], sys.argv[6], sys.argv[7])
 
 
 

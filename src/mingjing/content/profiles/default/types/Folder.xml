@@ -40,7 +40,7 @@
 
   <!-- View information -->
   <property name="add_view_expr">string:${folder_url}/++add++Folder</property>
-  <property name="default_view">tabular_view</property>
+  <property name="default_view">listing_view</property>
   <property name="default_view_fallback">False</property>
   <property name="immediate_view">view</property>
   <property name="view_methods">

@@ -142,6 +142,3 @@ class CoverView(BrowserView):
         portal = api.portal.get()
 
         return self.template()
-
-
-## 未測：, sort_limit=LIMIT)[:LIMIT]

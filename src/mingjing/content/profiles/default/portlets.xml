@@ -13,5 +13,13 @@
                      description"
     />
 
+  <portlet
+    addview="mingjing.content.portlet.EmbedHTML"
+    title="EmbedHTML portlet"
+    description="A portlet to rendering EmbedHTML."
+    i18n:attributes="title;
+                     description"
+    />
+
 </portlets>
 
