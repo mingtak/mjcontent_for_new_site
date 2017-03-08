@@ -8,7 +8,6 @@
         name="custom_info_in_header"
         for="*"
         manager="plone.app.layout.viewlets.interfaces.IHTTPHeaders"
-        template="template/custom_info_in_header.pt"
         class=".viewlet.CustomInfoInHeader"
         permission="zope2.View"
         />

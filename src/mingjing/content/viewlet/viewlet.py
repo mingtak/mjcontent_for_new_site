@@ -45,3 +45,14 @@ class SocialList(base.ViewletBase):
 
 class CustomInfoInHeader(base.ViewletBase):
     """  """
+
+    def render(self):
+        portal = api.portal.get()
+        request = self.request
+        context = self.context
+        to_folder_contents = True if ('edit' in request.get('HTTP_REFERER') and context.Type() not in ['Folder', 'Plone Site']) else False
+
+        if to_folder_contents:
+#            return '<script>document.location.href="%s/folder_contents";</script>' % context.getParentNode().absolute_url()
+            return '<meta http-equiv="refresh" content="0;url=%s/folder_contents" />' % context.getParentNode().absolute_url()
+        return ''
