@@ -22,7 +22,7 @@ from plone.directives import form
 class IFeatured(model.Schema):
     """ Add featured field """
 
-    form.mode(featured='hidden')
+#    form.mode(featured='hidden')
     featured = schema.Bool(
         title=_(u"Featured"),
         description=_(u"Checked it for featured."),

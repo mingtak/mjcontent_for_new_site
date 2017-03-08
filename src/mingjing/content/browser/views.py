@@ -51,7 +51,12 @@ class CoverView(BrowserView):
     def mainSliderNews(self):
         context = self.context
 #        return api.content.find(Type='News Item', id=context.mainSliderNews.split(), sort_on='modified', sort_order='reverse')
-        return api.content.find(Type='News Item', sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+        brain = []
+        for item in api.content.find(Type=['News Item', 'Blog', 'Ebook', 'Youtube'],
+                                     featured=True, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]:
+            if getattr(item.getObject(), 'image', None):
+                brain.append(item)
+        return brain
 
 
     #@ram.cache(lambda *args: time() // (120))

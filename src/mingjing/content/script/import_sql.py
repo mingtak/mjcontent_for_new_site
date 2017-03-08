@@ -330,7 +330,7 @@ class ImportContents:
 #            import pdb; pdb.set_trace()
 
             if isOld == 'old':
-                results = results[:20]
+                results = results[:100]
 #                import pdb; pdb.set_trace()
 
             for record in results:
