@@ -82,6 +82,13 @@ class ICover(Interface):
         required=False,
     )
 
+#    form.mode(yt_interList='hidden')
+    yt_interList = schema.Text(
+        title=_(u"Youtube International Video List"),
+        description=_(u"Don't edit this, auto renew."),
+        required=False,
+    )
+
     form.mode(liveProgram_1='hidden')
     liveProgram_1 = schema.Text(
         title=_(u"Live Program 1"),
