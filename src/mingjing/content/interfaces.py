@@ -75,7 +75,7 @@ class ICover(Interface):
         required=False,
     )
 
-    form.mode(radioList='hidden')
+#    form.mode(radioList='hidden')
     radioList = schema.Text(
         title=_(u"Radio List"),
         description=_(u"Don't edit this, auto renew."),
