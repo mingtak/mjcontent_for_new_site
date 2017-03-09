@@ -27,7 +27,7 @@ import json
 
 news_site_code = {
     'bbc':'http://feeds.bbci.co.uk/zhongwen/trad/rss.xml',
-    'youtube_radio':'https://www.youtube.com/playlist?list=PL7rBJWuEBrPYJCcxbTI-qTzuEEmiCCDXX', #廣播電台
+    'youtube_radio':'https://www.youtube.com/channel/UCdKyM0XmuvQrD0o5TNhUtkQ/videos', #廣播電台
     'youtube_inter':'https://www.youtube.com/channel/UCs7elJEjfHfLUEZ7HUbUlUw/videos', #海外電台
     'liveProgram_1':'http://tv.mingjingnet.com/playlist_svr1.json',
     'liveProgram_2':'http://tv.mingjingnet.com/playlist_svr2.json',
@@ -146,12 +146,13 @@ class ImportNews:
 
     def youtubeRadioList(self, soup):
 #        import pdb; pdb.set_trace()
-        items = soup.find_all("a", "pl-video-title-link")
+        items = soup.find_all("h3", "yt-lockup-title")
         cover = self.portal['cover']
         cover.radioList = ''
         for item in items[0:10]:
-            title = unicode(item.string).strip()
-            url = 'https://youtube.com%s' % item.get('href')
+            tag_a = item.find('a')
+            title = unicode(tag_a.string).strip()
+            url = 'https://youtube.com%s' % tag_a.get('href')
             cover.radioList += '%s|||%s\n' % (title, url)
 
 
