@@ -58,8 +58,8 @@ class ImportNews:
         catalog = portal.portal_catalog
         alsoProvides(request, IDisableCSRFProtection)
 
-        if self.type == 'news':
-            self.type = 'News Item'
+#        if self.type == 'news':
+        self.type = 'News Item'
 
         brain = api.content.find(container=portal, Type=self.type)
 #        import pdb; pdb.set_trace()

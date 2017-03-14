@@ -90,7 +90,7 @@ class IBasic(model.Schema):
 @provider(IFormFieldProvider)
 class ICategorization(model.Schema):
 
-    directives.mode(subjects="hidden")
+#    directives.mode(subjects="hidden")
     subjects = schema.Tuple(
         title=_(u'label_tags', default=u'Tags'),
         description=_(

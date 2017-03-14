@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import sys
 from Testing import makerequest
 from AccessControl.SecurityManagement import newSecurityManager
@@ -16,10 +15,17 @@ from bs4 import BeautifulSoup
 from Products.CMFPlone.utils import safe_unicode
 from plone.app.textfield.value import RichTextValue
 from plone import namedfile
-#import html2text
+import html2text
 import urllib2
 import logging
 import json
+import pyopencc
+import jieba
+
+from naiveBayesClassifier import tokenizer
+from naiveBayesClassifier.trainer import Trainer
+from naiveBayesClassifier.classifier import Classifier
+
 
 # howto: bin/client1 run pathtofile/import_news.py portal_name admin_id news_site_code(ex. bbc)
 # mapping: sys.argv[3] is portal_name, sys.argv[4] is admin_id, sys.argv[5] is news_site_code
@@ -27,14 +33,9 @@ import json
 
 news_site_code = {
     'bbc':'http://feeds.bbci.co.uk/zhongwen/trad/rss.xml',
-    'youtube_radio':'https://www.youtube.com/channel/UCdKyM0XmuvQrD0o5TNhUtkQ/videos', #廣播電台
-    'youtube_inter':'https://www.youtube.com/channel/UCs7elJEjfHfLUEZ7HUbUlUw/videos', #海外電台
-    'liveProgram_1':'http://tv.mingjingnet.com/playlist_svr1.json',
-    'liveProgram_2':'http://tv.mingjingnet.com/playlist_svr2.json',
 }
 
 logger = logging.getLogger('Import News')
-
 
 
 class ImportNews:
@@ -85,32 +86,38 @@ class ImportNews:
             soup = BeautifulSoup(docs, "xml")
 
         # To youtube_radio
-        if site_code == 'youtube_radio':
-            result = self.youtubeRadioList(soup)
+#        if site_code == 'youtube_radio':
+#            result = self.youtubeRadioList(soup)
+#            transaction.commit()
+#            return
+
+        if site_code == 'bbc':
+            result = self.getBBCNews(soup)
             transaction.commit()
             return
 
-        # To youtube_inter
-        if site_code == 'youtube_inter':
-            result = self.youtubeInterList(soup)
-            transaction.commit()
-            return
+
+    def getBBCNews(self, soup):
+
+        portal = self.portal
+        request = self.portal.REQUEST
+        catalog = portal.portal_catalog
 
         for item in soup.findAll('item'):
             link = unicode(item.link.string)
 
-            # catalog 查看是否已存在
-### TODO: url index 未建
-#            import pdb; pdb.set_trace()
-            if catalog({'Type':'News Item', 'originalUrl':link}):
+            if catalog(originalUrl=link):
                 continue
 
             webPage = urllib2.urlopen(link)
             pageSoup = BeautifulSoup(webPage, "lxml")
 
+#            import pdb; pdb.set_trace()
             try:
-                if site_code == 'bbc':
-                    result = self.bbcNewsContent(pageSoup)
+#                if site_code == 'bbc':
+
+                # 取得html及keywords(完整列表)
+                result, keywords = self.bbcNewsContent(pageSoup)
             except:continue
 
             title, text = result['title'], result['text']
@@ -118,54 +125,41 @@ class ImportNews:
             if len(text) < 50:
                 continue
 
+            newsCat = ''
+            for key in keywords:
+#                if key.startswith('n'):
+                if key in ['n01', 'n07', 'n06', 'n02', 'n12', 'n16', 'n99']:
+                    newsCat = key
+                    break
+
+            #取得registry
+            reg = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.catDict')
+
+            subject = []
+            for key in keywords[0:6]:
+                if key != newsCat:
+                    for item in reg.keys():
+                        if item.startswith(key):
+                            keyTitle = item.split('|||')[1]
+                            break
+                    subject.append(keyTitle)
+
+#            import pdb; pdb.set_trace()
             news = api.content.create(
                 type='News Item',
+                id=DateTime().strftime('%Y%m%d%H%M%s'),
                 title=title,
                 text=RichTextValue(text),
                 originalUrl=link,
-                container=portal['news'],
+                container=portal[newsCat],
             )
+            news.setSubject(tuple(subject))
 
-            portal['news'].moveObjectsToTop(news.id)
-            api.content.transition(obj=news, transition='publish')
+            portal[newsCat].moveObjectsToTop(news.id)
+#            api.content.transition(obj=news, transition='publish')
 
             transaction.commit()
-            print title
-
-
-    def liveProgram(self, site_code, docs):
-        portal = api.portal.get()
-        cover = portal['cover']
-        if json.loads(docs).get('startTime'):
-            if site_code == 'liveProgram_1':
-                cover.liveProgram_1 = docs
-            if site_code == 'liveProgram_2':
-                cover.liveProgram_2 = docs
-        return
-
-
-    def youtubeRadioList(self, soup):
-#        import pdb; pdb.set_trace()
-        items = soup.find_all("h3", "yt-lockup-title")
-        cover = self.portal['cover']
-        cover.radioList = ''
-        for item in items[0:10]:
-            tag_a = item.find('a')
-            title = unicode(tag_a.string).strip()
-            url = 'https://youtube.com%s' % tag_a.get('href')
-            cover.radioList += '%s|||%s\n' % (title, url)
-
-
-    def youtubeInterList(self, soup):
-#        import pdb; pdb.set_trace()
-        items = soup.find_all("h3", "yt-lockup-title")
-        cover = self.portal['cover']
-        cover.yt_interList = ''
-        for item in items[0:10]:
-            tag_a = item.find('a')
-            title = unicode(tag_a.string).strip()
-            url = 'https://youtube.com%s' % tag_a.get('href')
-            cover.yt_interList += '%s|||%s\n' % (title, url)
+            print '%s: %s' % (title, news.absolute_url())
 
 
     def bbcNewsContent(self, pageSoup):
@@ -194,12 +188,73 @@ class ImportNews:
         while text.find(class_='story-image-copyright'):
             text.find(class_='story-image-copyright').decompose()
 
+        while text.find('script'):
+            text.find('script').decompose()
+
+        for tag in text.findAll():
+            if tag.has_attr('class'):
+                del tag['class']
+            if tag.has_attr('id'):
+                del tag['id']
+        if text.has_attr('class'):
+            del text['class']
+        if text.has_attr('id'):
+            del text['id']
+
+#        import pdb; pdb.set_trace()
+
         text = unicode(text)
+        keywords = self.getKeywords(text)
         text += u'<p>新聞來源:BBC中文網<p>'
-        return {'title':title, 'text':text}
+
+        return [{'title':title, 'text':text}, keywords]
 
 
+    def zhsJieba(self, text):
 
+        # 轉為簡體
+        cc = pyopencc.OpenCC('zht2zhs.ini')
+        text = cc.convert(text)
+
+        #用jibea分詞
+        seg_list = jieba.cut(text)
+        return ' '.join(seg_list)
+
+
+    def getKeywords(self, html):
+
+        h = html2text.HTML2Text()
+        h.ignore_links = True
+        h.ignore_emphasis = True
+        h.ignore_images = True
+        #取得純文字
+        text = h.handle(html)[:100]
+#        print text
+        text = self.zhsJieba(text)
+
+        #取得registry
+        reg = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.catDict')
+        trainSet = []
+        for item in reg:
+            key = item.split('|||')[0]
+            for line in reg[item].split('\n'):
+                zhsString = self.zhsJieba(line)
+                trainSet.append({'category': key, 'text': zhsString})
+
+        #用簡單貝氏分類文章
+        newsTrainer = Trainer(tokenizer)
+        for news in trainSet:
+            newsTrainer.train(news['text'].encode('utf-8'), news['category'])
+        newsClassifier = Classifier(newsTrainer.data, tokenizer)
+        classification = newsClassifier.classify(text)
+        print classification
+#        import pdb; pdb.set_trace()
+        if classification[0][1] == 0.0:
+            classification.insert(0, (u'n99', 0.0))
+        result = []
+        for item in classification:
+            result.append(item[0])
+        return result
 
 
 instance = ImportNews(sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])

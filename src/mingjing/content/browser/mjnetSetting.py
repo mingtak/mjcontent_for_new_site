@@ -22,6 +22,13 @@ class IMJNetSetting(Form.Schema):
         required=True,
     )
 
+    catDict = schema.Dict(
+        title=_(u"Categories Dict"),
+        key_type=schema.TextLine(title=u"Key"),
+        value_type=schema.Text(title=u"Value"),
+        required=False,
+    )
+
 
 class MJNetSettingControlPanelForm(RegistryEditForm):
     form.extends(RegistryEditForm)
