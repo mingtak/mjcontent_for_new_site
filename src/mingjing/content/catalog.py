@@ -18,6 +18,12 @@ def featured_indexer(obj):
 
 
 @indexer(Interface)
+def headWeight_indexer(obj):
+    if hasattr(obj, 'headWeight'):
+        return obj.headWeight
+
+
+@indexer(Interface)
 def keywords_indexer(obj):
     if hasattr(obj, 'keywords'):
         keywords = []

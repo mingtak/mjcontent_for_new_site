@@ -21,6 +21,7 @@ import logging
 import json
 import pyopencc
 import jieba
+import jieba.analyse
 
 from naiveBayesClassifier import tokenizer
 from naiveBayesClassifier.trainer import Trainer
@@ -33,6 +34,7 @@ from naiveBayesClassifier.classifier import Classifier
 
 news_site_code = {
     'bbc':'http://feeds.bbci.co.uk/zhongwen/trad/rss.xml',
+    'cna-f':'http://feeds.feedburner.com/rsscna/finance?format=xml',
 }
 
 logger = logging.getLogger('Import News')
@@ -96,6 +98,67 @@ class ImportNews:
             transaction.commit()
             return
 
+        if site_code == 'cna-f':
+            result = self.getCNA_F_News(soup)
+            transaction.commit()
+            return
+
+
+    def getCNA_F_News(self, soup):
+        portal = self.portal
+        request = self.portal.REQUEST
+        catalog = portal.portal_catalog
+
+        for item in soup.findAll('item'):
+            link = unicode(item.link.string)
+
+            if catalog(originalUrl=link):
+                continue
+
+            webPage = urllib2.urlopen(link)
+            pageSoup = BeautifulSoup(webPage, "lxml")
+
+            try:
+                # 取得html及keywords(完整列表)
+                result, keywords, oldPicturePath = self.ncaNewsContent(pageSoup)
+            except:continue
+
+            title, text = result['title'], result['text']
+
+            if len(text) < 50:
+                continue
+
+            newsCat = 'n01'
+
+            #取得registry
+            reg = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.catDict')
+
+            subject = []
+            for key in keywords[0:6]:
+                if key != newsCat:
+                    for item in reg.keys():
+                        if item.startswith(key):
+                            keyTitle = item.split('|||')[1]
+                            break
+                    subject.append(keyTitle)
+
+            news = api.content.create(
+                type='News Item',
+                id=DateTime().strftime('%Y%m%d%H%M%s'),
+                title=title,
+                text=RichTextValue(text),
+                originalUrl=link,
+                oldPicturePath=oldPicturePath,
+                container=portal[newsCat],
+            )
+            news.setSubject(tuple(subject))
+
+            portal[newsCat].moveObjectsToTop(news.id)
+#            api.content.transition(obj=news, transition='publish')
+
+            transaction.commit()
+            print '%s: %s' % (title, news.absolute_url())
+
 
     def getBBCNews(self, soup):
 
@@ -117,7 +180,7 @@ class ImportNews:
 #                if site_code == 'bbc':
 
                 # 取得html及keywords(完整列表)
-                result, keywords = self.bbcNewsContent(pageSoup)
+                result, keywords, oldPicturePath = self.bbcNewsContent(pageSoup)
             except:continue
 
             title, text = result['title'], result['text']
@@ -151,6 +214,7 @@ class ImportNews:
                 title=title,
                 text=RichTextValue(text),
                 originalUrl=link,
+                oldPicturePath=oldPicturePath,
                 container=portal[newsCat],
             )
             news.setSubject(tuple(subject))
@@ -160,6 +224,34 @@ class ImportNews:
 
             transaction.commit()
             print '%s: %s' % (title, news.absolute_url())
+
+    def ncaNewsContent(self,pageSoup):
+        title = unicode(pageSoup.find('title').string).split('|')[0].strip()
+        text = pageSoup.find(class_='article_box')
+
+        while text.find('script'):
+            text.find('script').decompose()
+
+        for tag in text.findAll():
+            if tag.has_attr('class'):
+                del tag['class']
+            if tag.has_attr('id'):
+                del tag['id']
+        if text.has_attr('class'):
+            del text['class']
+        if text.has_attr('id'):
+            del text['id']
+
+        try:
+            oldPicturePath = text.find('img')['src']
+        except:
+            oldPicturePath = ''
+        print oldPicturePath
+        text = unicode(text)
+        keywords = self.getKeywords(text)
+        text += u'<p>新聞來源:中央通訊社<p>'
+
+        return [{'title':title, 'text':text}, keywords, oldPicturePath]
 
 
     def bbcNewsContent(self, pageSoup):
@@ -179,8 +271,6 @@ class ImportNews:
             img_tag = pageSoup.new_tag("img")
             img_tag['src'] = tag.get('data-src')
             text.find(class_='js-delayed-image-load').replace_with(img_tag)
-
-
 
         while text.find(class_='off-screen'):
             text.find(class_='off-screen').decompose()
@@ -202,12 +292,16 @@ class ImportNews:
             del text['id']
 
 #        import pdb; pdb.set_trace()
-
+        try:
+            oldPicturePath = text.find('img')['src']
+        except:
+            oldPicturePath = ''
+        print oldPicturePath
         text = unicode(text)
         keywords = self.getKeywords(text)
         text += u'<p>新聞來源:BBC中文網<p>'
 
-        return [{'title':title, 'text':text}, keywords]
+        return [{'title':title, 'text':text}, keywords, oldPicturePath]
 
 
     def zhsJieba(self, text):
@@ -216,8 +310,13 @@ class ImportNews:
         cc = pyopencc.OpenCC('zht2zhs.ini')
         text = cc.convert(text)
 
+#        import pdb; pdb.set_trace()
         #用jibea分詞
-        seg_list = jieba.cut(text)
+        if len(text)<200:
+            seg_list = jieba.cut(text)
+        else:
+            seg_list = jieba.analyse.extract_tags(text, topK=30)
+            print seg_list
         return ' '.join(seg_list)
 
 
@@ -228,7 +327,7 @@ class ImportNews:
         h.ignore_emphasis = True
         h.ignore_images = True
         #取得純文字
-        text = h.handle(html)[:100]
+        text = h.handle(html)
 #        print text
         text = self.zhsJieba(text)
 

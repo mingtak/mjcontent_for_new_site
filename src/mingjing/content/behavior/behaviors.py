@@ -30,6 +30,13 @@ class IFeatured(model.Schema):
         required=False,
     )
 
+    headWeight = schema.Int(
+        title=_(u"Head Weight"),
+        description=_(u"Please set Head Weight value, default:10."),
+        default=10,
+        required=True,
+    )
+
 
 class IKeywords(model.Schema):
     """ Add keywords for Article """
@@ -62,7 +69,7 @@ class IOriginalUrl(model.Schema):
 
 class IOldFields(model.Schema):
     """ Add Old Fields """
-    form.mode(oldPicturePath='hidden')
+#    form.mode(oldPicturePath='hidden')
     oldPicturePath = schema.TextLine(
         title=_(u"Old Picture Path"),
         required=False,
@@ -127,6 +134,7 @@ class Featured(object):
 
     # -*- Your behavior property setters & getters here ... -*-
     featured = context_property("featured")
+    headWeight = context_property("headWeight")
 
 
 class FreeContent(object):

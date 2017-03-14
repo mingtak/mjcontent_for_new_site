@@ -32,11 +32,13 @@
 
   <!-- Enabled behaviors -->
   <property name="behaviors" purge="true">
-    <element value="mingjing.content.behavior.metadata.IBasic"/>
+<!--    <element value="mingjing.content.behavior.metadata.IBasic"/> -->
+    <element value="plone.app.dexterity.behaviors.metadata.IBasic"/>
     <element value="mingjing.content.behavior.behaviors.IFeatured" />
-    <element value="mingjing.content.behavior.behaviors.IKeywords" />
-    <element value="mingjing.content.behavior.metadata.ICategorization"/>
-    <element value="mingjing.content.behavior.behaviors.IFreeContent" />
+<!--    <element value="mingjing.content.behavior.behaviors.IKeywords" /> -->
+<!--    <element value="mingjing.content.behavior.metadata.ICategorization"/>
+    <element value="mingjing.content.behavior.behaviors.IFreeContent" /> -->
+    <element value="plone.app.dexterity.behaviors.metadata.ICategorization"/> 
     <element value="plone.app.contenttypes.behaviors.richtext.IRichText"/>
     <element value="mingjing.content.behavior.behaviors.INamedFromTimeStamp"/>
     <element value="plone.app.contenttypes.behaviors.leadimage.ILeadImage"/>
