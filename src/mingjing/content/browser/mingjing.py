@@ -74,11 +74,15 @@ class SetFeatured(BrowserView):
             item = brain[0].getObject()
         except:return
 
-        if request.form.get('checked') == 'true':
-            item.featured = True
-        else:
-            item.featured = False
-        item.reindexObject(idxs=['featured'])
+        if request.form.has_key('checked'):
+            if request.form.get('checked') == 'true':
+                item.featured = True
+            else:
+                item.featured = False
+            item.reindexObject(idxs=['featured'])
+        elif request.form.has_key('headWeight'):
+            item.headWeight = int(request.form.get('headWeight', 10))
+            item.reindexObject(idxs=['headWeight'])
         transaction.commit()
         return
 

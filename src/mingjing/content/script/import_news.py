@@ -33,8 +33,12 @@ from naiveBayesClassifier.classifier import Classifier
 #          sys.argv[6] is dataType, 'xml', 'html' ...
 
 news_site_code = {
-    'bbc':'http://feeds.bbci.co.uk/zhongwen/trad/rss.xml',
-    'cna-f':'http://feeds.feedburner.com/rsscna/finance?format=xml',
+    'bbc': 'http://feeds.bbci.co.uk/zhongwen/trad/rss.xml',
+    'cna-f': 'http://feeds.feedburner.com/rsscna/finance?format=xml',
+    'cna-it': 'http://feeds.feedburner.com/rsscna/technology?format=xml',
+    'cna-life': 'http://feeds.feedburner.com/rsscna/lifehealth?format=xml',
+    'cna-cn': 'http://feeds.feedburner.com/rsscna/mainland?format=xml',
+    'cna-sp': 'http://feeds.feedburner.com/rsscna/sport?format=xml',
 }
 
 logger = logging.getLogger('Import News')
@@ -93,18 +97,13 @@ class ImportNews:
 #            transaction.commit()
 #            return
 
-        if site_code == 'bbc':
-            result = self.getBBCNews(soup)
-            transaction.commit()
-            return
-
-        if site_code == 'cna-f':
-            result = self.getCNA_F_News(soup)
-            transaction.commit()
-            return
+        result = self.getNews(soup, site_code)
+        transaction.commit()
+        return
 
 
-    def getCNA_F_News(self, soup):
+    def getNews(self, soup, site_code):
+
         portal = self.portal
         request = self.portal.REQUEST
         catalog = portal.portal_catalog
@@ -120,15 +119,33 @@ class ImportNews:
 
             try:
                 # 取得html及keywords(完整列表)
-                result, keywords, oldPicturePath = self.ncaNewsContent(pageSoup)
+
+                if site_code == 'bbc':
+                    result, keywords, oldPicturePath = self.bbcNewsContent(pageSoup)
+                elif site_code.startswith('cna-'):
+                    result, keywords, oldPicturePath = self.ncaNewsContent(pageSoup)
+
+                title, text = result['title'], result['text']
+                if len(text) < 50:
+                    continue
+
+                if site_code == 'cna-f':
+                    newsCat = 'n01'
+                elif site_code == 'cna-it':
+                    newsCat = 'n02'
+                elif site_code == 'cna-life':
+                    newsCat = 'n12'
+                elif site_code == 'cna-cn':
+                    newsCat = 'n06'
+                elif site_code == 'cna-sp':
+                    newsCat = 'n16'
+                elif site_code == 'bbc':
+                    newsCat = ''
+                    for key in keywords:
+                        if key in ['n01', 'n07', 'n06', 'n02', 'n12', 'n16', 'n99']:
+                            newsCat = key
+                            break
             except:continue
-
-            title, text = result['title'], result['text']
-
-            if len(text) < 50:
-                continue
-
-            newsCat = 'n01'
 
             #取得registry
             reg = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.catDict')
@@ -146,6 +163,7 @@ class ImportNews:
                 type='News Item',
                 id=DateTime().strftime('%Y%m%d%H%M%s'),
                 title=title,
+                description=self.getHtml2Text(text)[:100],
                 text=RichTextValue(text),
                 originalUrl=link,
                 oldPicturePath=oldPicturePath,
@@ -159,71 +177,6 @@ class ImportNews:
             transaction.commit()
             print '%s: %s' % (title, news.absolute_url())
 
-
-    def getBBCNews(self, soup):
-
-        portal = self.portal
-        request = self.portal.REQUEST
-        catalog = portal.portal_catalog
-
-        for item in soup.findAll('item'):
-            link = unicode(item.link.string)
-
-            if catalog(originalUrl=link):
-                continue
-
-            webPage = urllib2.urlopen(link)
-            pageSoup = BeautifulSoup(webPage, "lxml")
-
-#            import pdb; pdb.set_trace()
-            try:
-#                if site_code == 'bbc':
-
-                # 取得html及keywords(完整列表)
-                result, keywords, oldPicturePath = self.bbcNewsContent(pageSoup)
-            except:continue
-
-            title, text = result['title'], result['text']
-
-            if len(text) < 50:
-                continue
-
-            newsCat = ''
-            for key in keywords:
-#                if key.startswith('n'):
-                if key in ['n01', 'n07', 'n06', 'n02', 'n12', 'n16', 'n99']:
-                    newsCat = key
-                    break
-
-            #取得registry
-            reg = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.catDict')
-
-            subject = []
-            for key in keywords[0:6]:
-                if key != newsCat:
-                    for item in reg.keys():
-                        if item.startswith(key):
-                            keyTitle = item.split('|||')[1]
-                            break
-                    subject.append(keyTitle)
-
-#            import pdb; pdb.set_trace()
-            news = api.content.create(
-                type='News Item',
-                id=DateTime().strftime('%Y%m%d%H%M%s'),
-                title=title,
-                text=RichTextValue(text),
-                originalUrl=link,
-                oldPicturePath=oldPicturePath,
-                container=portal[newsCat],
-            )
-            news.setSubject(tuple(subject))
-
-            portal[newsCat].moveObjectsToTop(news.id)
-#            api.content.transition(obj=news, transition='publish')
-
-            transaction.commit()
-            print '%s: %s' % (title, news.absolute_url())
 
     def ncaNewsContent(self,pageSoup):
         title = unicode(pageSoup.find('title').string).split('|')[0].strip()
@@ -243,7 +196,12 @@ class ImportNews:
             del text['id']
 
         try:
-            oldPicturePath = text.find('img')['src']
+            imgs = text.find_all('img')
+            oldPicturePath = ''
+            for img in imgs:
+                if img['src'].startswith('http'):
+                    oldPicturePath = img['src']
+                    break
         except:
             oldPicturePath = ''
         print oldPicturePath
@@ -320,14 +278,19 @@ class ImportNews:
         return ' '.join(seg_list)
 
 
-    def getKeywords(self, html):
-
+    def getHtml2Text(self, html):
         h = html2text.HTML2Text()
         h.ignore_links = True
         h.ignore_emphasis = True
         h.ignore_images = True
         #取得純文字
         text = h.handle(html)
+        return text
+
+
+    def getKeywords(self, html):
+
+        text = self.getHtml2Text(html)
 #        print text
         text = self.zhsJieba(text)
 

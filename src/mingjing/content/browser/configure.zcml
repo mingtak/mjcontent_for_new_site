@@ -18,6 +18,13 @@
       />
 
   <browser:page
+      name="newest_contents"
+      for="*"
+      class=".views.NewestContents"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
       name="mingjing_news"
       for="plone.app.contenttypes.interfaces.IFolder"
       class=".mingjing.MingjingNews"
