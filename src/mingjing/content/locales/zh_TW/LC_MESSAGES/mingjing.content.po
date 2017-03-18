@@ -111,11 +111,11 @@ msgstr "直播節目表 2"
 
 #: ./browser/mjnetSetting.py:32
 msgid "MJNet Setting"
-msgstr "明鏡網設定"
+msgstr "北美觀天下設定"
 
 #: ./profiles/default/controlpanel.xml
 msgid "MJNews setup"
-msgstr "明鏡網設定"
+msgstr "北美觀天下設定"
 
 #: ./interfaces.py:49
 msgid "Main Slider News"

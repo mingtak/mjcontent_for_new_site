@@ -5,10 +5,12 @@ from plone import api
 from datetime import datetime
 from DateTime import DateTime
 import json
-from plone.memoize import ram
+#from plone.memoize import ram
 from time import time
 from Products.CMFPlone.utils import safe_unicode
+import logging
 
+logger = logging.getLogger('mingjing.content')
 LIMIT=20
 
 
@@ -34,7 +36,6 @@ class YoutubeView(BrowserView):
     template = ViewPageTemplateFile("template/youtube_view.pt")
 
     def __call__(self):
-        import pdb; pdb.set_trace()
         return self.template()
 
 
@@ -59,7 +60,7 @@ class CoverView(BrowserView):
     template = ViewPageTemplateFile("template/cover_view.pt")
     date_range = {
         'query': (
-            DateTime()-2,
+            DateTime()-1,
             DateTime(),
         ),
         'range': 'min:max',
@@ -68,22 +69,24 @@ class CoverView(BrowserView):
     #@ram.cache(lambda *args: time() // (120))
     def mainSliderNews(self):
         context = self.context
-#        import pdb; pdb.set_trace()
-        return api.content.find(Type=['News Item', 'Blog', 'Ebook', 'Youtube'],
+        brain = api.content.find(Type=['News Item', 'Blog', 'Ebook', 'Youtube'], review_state='published', hasOldPicture=True,
                                 featured=True, created=self.date_range, sort_on='headWeight', sort_order='reverse')
+#        import pdb; pdb.set_trace()
+        for item in brain:logger.info('%s: %s' % (item.Title, item.headWeight))
+        return brain
 
 
     #@ram.cache(lambda *args: time() // (120))
     def youtubes(self):
 #        import pdb; pdb.set_trace()
         portal = api.portal.get()
-        return api.content.find(context=portal, Type='Youtube', featured=True, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+        return api.content.find(context=portal, Type='Youtube', featured=True, review_state='published', sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
 
 
     #@ram.cache(lambda *args: time() // (120))
     def todayNews(self):
         portal = api.portal.get()
-        return api.content.find(context=portal, Type='News Item', featured=True, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+        return api.content.find(context=portal, Type='News Item', hasOldPicture=True, featured=True, review_state='published', sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
 
 
     #@ram.cache(lambda *args: time() // (120))
@@ -98,13 +101,13 @@ class CoverView(BrowserView):
 
         for key in tabsNameList_1:
 #            import pdb;pdb.set_trace()
-            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='created', review_state='published', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
             tabsBrain_1.append(brain[0:5])
         for key in tabsNameList_2:
-            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='created', review_state='published', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
             tabsBrain_2.append(brain[0:5])
         for key in tabsNameList_3:
-            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+            brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='created', review_state='published', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
             tabsBrain_3.append(brain[0:5])
         return [tabsNameList_1, tabsBrain_1, tabsNameList_2, tabsBrain_2, tabsNameList_3, tabsBrain_3]
 

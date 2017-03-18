@@ -6,27 +6,27 @@
 
     <atom:link rel="self" type="application/rss+xml" href="${view/request/URL}?${view/request/QUERY_STRING}" />
     <tal:title switch="python:view.request.form.get('range', '1d')">
-        <title tal:case="string:2d">瀏覽排行-12小時</title>
-        <title tal:case="string:2d">瀏覽排行-48小時</title>
-        <title tal:case="string:3d">瀏覽排行-72小時</title>
-        <title tal:case="string:w">瀏覽排行-一周</title>
-        <title tal:case="string:m">瀏覽排行-一月</title>
-        <title tal:case="string:newest">最新播報</title>
-        <title tal:case="string:head">明鏡頭條</title>
-        <title tal:case="string:editor">編輯推薦</title>
-        <title tal:case="string:hot">網友熱搜</title>
-        <title tal:case="string:world">全球媒體聯播</title>
-        <title tal:case="default">瀏覽排行-24小時</title>
+        <title tal:case="string:2d">熱門-12小時</title>
+        <title tal:case="string:2d">熱門-48小時</title>
+        <title tal:case="string:3d">熱門-72小時</title>
+        <title tal:case="string:w">熱門-一周</title>
+        <title tal:case="string:m">熱門-一月</title>
+        <title tal:case="string:newest">最新</title>
+        <title tal:case="string:head">頭條</title>
+        <title tal:case="string:editor">推薦</title>
+        <title tal:case="string:hot">熱搜</title>
+        <title tal:case="string:world">媒體聯播</title>
+        <title tal:case="default">排行-24小時</title>
     </tal:title>
     <link>${view/portal/absolute_url}/news/ranking?${view/request/QUERY_STRING}</link>
     <description></description>
 
     <language>zh-tw</language>
     <copyright></copyright>
-    <generator>明鏡網</generator>
+    <generator>北美觀天下</generator>
     <item tal:repeat="item view/brain">
-      <title>${item/Title}</title>
-      <description>${item/Description}</description>
+      <title><![CDATA[ ${item/Title} ]]></title>
+      <description><![CDATA[ ${item/Description} ]]></description>
       <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/">
           <![CDATA[
           ]]>

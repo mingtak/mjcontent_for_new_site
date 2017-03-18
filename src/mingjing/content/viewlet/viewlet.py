@@ -6,6 +6,36 @@ import MySQLdb
 from DateTime import DateTime
 from datetime import datetime
 
+LIMIT = 10
+
+
+class HotHit(base.ViewletBase):
+
+    def update(self):
+        context = self.context
+        portal = api.portal.get()
+        request = self.request
+
+        dbSetting = api.portal.get_registry_record('mingjing.content.browser.mjnetSetting.IMJNetSetting.mysqlSetting')
+        host, port, userName, password, dbName, charset = dbSetting.split(',')
+        port = int(port)
+        db = MySQLdb.connect(host=host, port=port, user=userName, passwd=password, db=dbName, charset=charset)
+        cursor = db.cursor()
+
+        range = [0.5, 1, 2, 3, 7, 30]
+        self.brain = []
+        for date in range:
+            startDate = DateTime() - date
+            sqlStr = "SELECT `uid` FROM `mj_counter` WHERE `created` > '%s' ORDER BY `mj_counter`.`viewCounter` DESC LIMIT 10" % \
+                     startDate.strftime('%Y/%m/%d %H:%M:%S')
+            cursor.execute(sqlStr)
+            results = cursor.fetchall()
+            uids = []
+            for item in results:
+                uids.append(item[0])
+
+            self.brain.append(api.content.find(context=portal, UID=uids, sort_limit=LIMIT)[:LIMIT])
+
 
 class ViewCounter(base.ViewletBase):
 

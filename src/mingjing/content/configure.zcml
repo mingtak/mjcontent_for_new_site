@@ -42,4 +42,5 @@
   <adapter name="featured" factory=".catalog.featured_indexer" />
   <adapter name="headWeight" factory=".catalog.headWeight_indexer" />
   <adapter name="keywords" factory=".catalog.keywords_indexer" />
+  <adapter name="hasOldPicture" factory=".catalog.hasOldPicture_indexer" />
 </configure>

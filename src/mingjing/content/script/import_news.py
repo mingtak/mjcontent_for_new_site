@@ -39,6 +39,17 @@ news_site_code = {
     'cna-life': 'http://feeds.feedburner.com/rsscna/lifehealth?format=xml',
     'cna-cn': 'http://feeds.feedburner.com/rsscna/mainland?format=xml',
     'cna-sp': 'http://feeds.feedburner.com/rsscna/sport?format=xml',
+    'dw-it': 'http://partner.dw.com/rdf/rss-chi-sci',
+    'dw-f': 'http://partner.dw.com/rdf/rss-chi-eco',
+    'dw-life': 'http://partner.dw.com/rdf/rss-chi-cul',
+    'dw-sp': 'http://partner.dw.com/rdf/rss-chi-bl',
+    'dw-inter': 'http://partner.dw.com/rdf/rss-chi-all',
+    'rfi-asia-inter': 'http://cn.rfi.fr/%E4%BA%9A%E6%B4%B2/rss',
+    'rfi-cn': 'http://cn.rfi.fr/%E4%B8%AD%E5%9B%BD/rss',
+    'rfi-3land-cn': 'http://cn.rfi.fr/%E6%B8%AF%E6%BE%B3%E5%8F%B0/rss', #港澳台
+    'rfi-am-inter': 'http://cn.rfi.fr/%E7%BE%8E%E6%B4%B2/rss',
+    'rfi-eu-inter': 'http://cn.rfi.fr/%E6%AC%A7%E6%B4%B2/rss',
+    'rfi-life': 'http://cn.rfi.fr/%E7%A7%91%E6%8A%80%E4%B8%8E%E6%96%87%E5%8C%96/rss',
 }
 
 logger = logging.getLogger('Import News')
@@ -111,6 +122,11 @@ class ImportNews:
         for item in soup.findAll('item'):
             link = unicode(item.link.string)
 
+            # 中文網址預處理
+            if site_code.startswith('dw-') or site_code.startswith('rfi-'):
+                link = self.transZhUrl(link)
+
+            link = str(link)
             if catalog(originalUrl=link):
                 continue
 
@@ -124,21 +140,26 @@ class ImportNews:
                     result, keywords, oldPicturePath = self.bbcNewsContent(pageSoup)
                 elif site_code.startswith('cna-'):
                     result, keywords, oldPicturePath = self.ncaNewsContent(pageSoup)
+                elif site_code.startswith('dw-'):
+                    result, keywords, oldPicturePath = self.dwNewsContent(pageSoup)
+                elif site_code.startswith('rfi-'):
+                    result, keywords, oldPicturePath = self.rfiNewsContent(pageSoup)
 
                 title, text = result['title'], result['text']
                 if len(text) < 50:
                     continue
-
-                if site_code == 'cna-f':
+                if site_code.endswith('-f'):
                     newsCat = 'n01'
-                elif site_code == 'cna-it':
+                elif site_code.endswith('-it'):
                     newsCat = 'n02'
-                elif site_code == 'cna-life':
+                elif site_code.endswith('-life'):
                     newsCat = 'n12'
-                elif site_code == 'cna-cn':
+                elif site_code.endswith('-cn'):
                     newsCat = 'n06'
-                elif site_code == 'cna-sp':
+                elif site_code.endswith('-sp'):
                     newsCat = 'n16'
+                elif site_code.endswith('-inter'):
+                    newsCat = 'n07'
                 elif site_code == 'bbc':
                     newsCat = ''
                     for key in keywords:
@@ -165,9 +186,10 @@ class ImportNews:
                 title=title,
                 description=self.getHtml2Text(text)[:100],
                 text=RichTextValue(text),
-                originalUrl=link,
+                originalUrl=str(link),
                 oldPicturePath=oldPicturePath,
                 container=portal[newsCat],
+                safe_id=True,
             )
             news.setSubject(tuple(subject))
 
@@ -178,22 +200,120 @@ class ImportNews:
             print '%s: %s' % (title, news.absolute_url())
 
 
+    def transZhUrl(self, link):
+        # 先只處理 DW 站
+        if 'dw.com' in link:
+            linkText = link.split('zh/')[-1].split('/a')[0]
+            transText = urllib2.quote(linkText.encode('utf-8'))
+        elif 'rfi.fr' in link:
+            linkText = link.split('.fr/')[-1]
+            transText = urllib2.quote(linkText.encode('utf-8'))
+        return link.replace(linkText, transText)
+
+
+    def rfiNewsContent(self,pageSoup):
+        title = unicode(pageSoup.find('h1', attrs={'itemprop':'name'}).string)
+        text = pageSoup.find('article', attrs={'class':'article-page'})
+        try:
+            items = text.find_all('div', attrs={'class':'soc-connect clearfix'})
+            for item in items:
+                item.decompose()
+        except:pass
+        try:
+            items = text.find_all('small')
+            for item in items:
+                item.decompose()
+        except:pass
+        try:
+            text.find('header').decompose()
+        except:pass
+        try:
+            text.find('div', attrs={'class':'article-pays'}).decompose()
+        except:pass
+        try:
+            text.find('div', attrs={'class':'actions'}).decompose()
+        except:pass
+
+        text = self.cutAttrs(text)
+
+        try:
+            imgs = text.find_all('img')
+            oldPicturePath = ''
+            for img in imgs:
+                if img['src'].startswith('http'):
+                    oldPicturePath = img['src']
+                    break
+        except:
+            oldPicturePath = ''
+        print oldPicturePath
+        text = unicode(text)
+        keywords = self.getKeywords(text)
+        text += u'<p>新聞來源:法國國際廣播電台(RFI)<p>'
+
+        return [{'title':title, 'text':text}, keywords, oldPicturePath]
+
+
+    def cutAttrs(self, soup):
+        # drop attrs and strip a tag
+        while soup.find('script'):
+            soup.find('script').decompose()
+        while soup.find('a'):
+            soup.a.unwrap()
+
+        for tag in soup.find_all():
+            for key in tag.attrs.keys():
+                if key not in ['href', 'src']:
+                    del tag[key]
+        for key in soup.attrs.keys():
+            if key not in ['href', 'src']:
+                del soup[key]
+        return soup
+
+
+    def dwNewsContent(self,pageSoup):
+        title = unicode(pageSoup.find('title').string).split('|')[0].strip()
+        text = pageSoup.find(class_='longText')
+#        try:
+        try:
+            text.find('div', attrs={'role': 'tablist'}).decompose()
+        except:
+            print 'error 202'
+
+        try:
+            for item in text.find_all('img'):
+                if not item['src'].startswith('http'):
+                    item['src'] = 'http://www.dw.com%s' % item['src']
+            for item in text.find_all('em'):
+                item.decompose()
+        except:
+            print '嚴重錯誤！'
+            pass
+#            import pdb; pdb.set_trace()
+
+        text = self.cutAttrs(text)
+
+        try:
+            imgs = text.find_all('img')
+            oldPicturePath = ''
+            for img in imgs:
+                if img['src'].startswith('http'):
+                    oldPicturePath = img['src']
+                    break
+        except:
+            oldPicturePath = ''
+        print oldPicturePath
+        text = unicode(text)
+        keywords = self.getKeywords(text)
+        text += u'<p>新聞來源:德國之聲<p>'
+
+        return [{'title':title, 'text':text}, keywords, oldPicturePath]
+
+
     def ncaNewsContent(self,pageSoup):
         title = unicode(pageSoup.find('title').string).split('|')[0].strip()
         text = pageSoup.find(class_='article_box')
 
-        while text.find('script'):
-            text.find('script').decompose()
-
-        for tag in text.findAll():
-            if tag.has_attr('class'):
-                del tag['class']
-            if tag.has_attr('id'):
-                del tag['id']
-        if text.has_attr('class'):
-            del text['class']
-        if text.has_attr('id'):
-            del text['id']
+        text = self.cutAttrs(text)
 
         try:
             imgs = text.find_all('img')
@@ -236,18 +356,7 @@ class ImportNews:
         while text.find(class_='story-image-copyright'):
             text.find(class_='story-image-copyright').decompose()
 
-        while text.find('script'):
-            text.find('script').decompose()
-
-        for tag in text.findAll():
-            if tag.has_attr('class'):
-                del tag['class']
-            if tag.has_attr('id'):
-                del tag['id']
-        if text.has_attr('class'):
-            del text['class']
-        if text.has_attr('id'):
-            del text['id']
+        text = self.cutAttrs(text)
 
 #        import pdb; pdb.set_trace()
         try:

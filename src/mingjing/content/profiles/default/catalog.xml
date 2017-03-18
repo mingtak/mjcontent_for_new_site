@@ -21,4 +21,8 @@
   </index>
   <column value="keywords"/>
 
+  <index name="hasOldPicture" meta_type="FieldIndex">
+    <indexed_attr value="hasOldPicture" />
+  </index>
+
 </object>

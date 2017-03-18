@@ -60,7 +60,7 @@ class IOriginalUrl(model.Schema):
     """ Add url field for News Original URL """
 
     dexterity.write_permission(originalUrl='cmf.ManagePortal')
-    form.mode(originalUrl='hidden')
+#    form.mode(originalUrl='hidden')
     originalUrl = schema.URI(
         title=_(u"Original URL"),
         required=False,

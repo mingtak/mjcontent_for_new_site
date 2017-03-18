@@ -7,6 +7,8 @@ import json
 from datetime import datetime
 from DateTime import DateTime
 import transaction
+from zope.event import notify
+from zope.lifecycleevent import ObjectModifiedEvent
 from .views import CoverView
 
 LIMIT = 20
@@ -79,9 +81,11 @@ class SetFeatured(BrowserView):
                 item.featured = True
             else:
                 item.featured = False
+            notify(ObjectModifiedEvent(item))
             item.reindexObject(idxs=['featured'])
         elif request.form.has_key('headWeight'):
             item.headWeight = int(request.form.get('headWeight', 10))
+            notify(ObjectModifiedEvent(item))
             item.reindexObject(idxs=['headWeight'])
         transaction.commit()
         return
@@ -169,6 +173,5 @@ class HotHits(BrowserView):
                 uids.append(item[0])
 
             brain.append(api.content.find(context=portal, UID=uids, sort_limit=LIMIT)[:LIMIT])
-#        import pdb; pdb.set_trace()
         return brain
 

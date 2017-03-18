@@ -31,3 +31,11 @@ def keywords_indexer(obj):
             keywords.append(safe_unicode(item))
         return keywords
 
+
+@indexer(Interface)
+def hasOldPicture_indexer(obj):
+    if getattr(obj, 'oldPicturePath', False):
+        return True
+    else:
+        return False
+

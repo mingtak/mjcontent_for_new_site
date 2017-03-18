@@ -46,7 +46,10 @@ def userLoginToFolderContents(event):
 
 def moveContentToTop(item, event):
     """ Moves Item to the top of its folder """
-    folder = item.getParentNode()
+    try:
+        folder = item.getParentNode()
+    except:
+        return
     if not hasattr(folder, 'moveObjectsToTop'):
         return
 
