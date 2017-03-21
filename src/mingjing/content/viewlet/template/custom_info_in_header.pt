@@ -1,10 +1,11 @@
 <?python
 from plone import api
 portal = api.portal.get()
-#toEdit = False if ('folder_contents' in view.request.get('HTTP_REFERER') and context.Type() not in ['Folder', 'Plone Site']) else False
-to_folder_contents = True if ('edit' in view.request.get('HTTP_REFERER') and context.Type() not in ['Folder', 'Plone Site']) else False
 ?>
-<tal:to_folder_contents tal:condition="python:to_folder_contents">
-    <script>document.location.href="${python:context.getParentNode().absolute_url()}/folder_contents";</script>
-</tal:to_folder_contents>
 
+<meta property="og:title" content="${context/title}" />
+<meta property="og:image" tal:attributes="content context/oldPicturePath" tal:condition="python:getattr(context, 'oldPicturePath', False)"/>
+<meta property="og:image" content="${portal/absolute_url}/resource/images/logo_gray.png/@@images/image/large"
+      tal:condition="python:not getattr(context, 'oldPicturePath', False)"/>
+<meta property="og:url" content="${context/absolute_url}" />
+<meta property="og:description" content="${python:context.description.replace(' ', '').replace('\n', '')}" />

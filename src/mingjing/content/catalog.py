@@ -18,6 +18,12 @@ def featured_indexer(obj):
 
 
 @indexer(Interface)
+def shared_indexer(obj):
+    if hasattr(obj, 'shared'):
+        return obj.shared
+
+
+@indexer(Interface)
 def headWeight_indexer(obj):
     if hasattr(obj, 'headWeight'):
         return obj.headWeight

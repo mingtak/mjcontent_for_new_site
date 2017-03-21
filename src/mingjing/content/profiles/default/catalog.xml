@@ -11,6 +11,11 @@
   </index>
   <column value="featured"/>
 
+  <index name="shared" meta_type="FieldIndex">
+    <indexed_attr value="shared" />
+  </index>
+  <column value="shared"/>
+
   <index name="headWeight" meta_type="FieldIndex">
     <indexed_attr value="headWeight" />
   </index>

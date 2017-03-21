@@ -82,11 +82,11 @@ class SetFeatured(BrowserView):
             else:
                 item.featured = False
             notify(ObjectModifiedEvent(item))
-            item.reindexObject(idxs=['featured'])
+            item.reindexObject()
         elif request.form.has_key('headWeight'):
             item.headWeight = int(request.form.get('headWeight', 10))
             notify(ObjectModifiedEvent(item))
-            item.reindexObject(idxs=['headWeight'])
+            item.reindexObject()
         transaction.commit()
         return
 

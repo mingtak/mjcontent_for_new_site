@@ -30,6 +30,12 @@ class IFeatured(model.Schema):
         required=False,
     )
 
+    shared = schema.Bool(
+        title=_(u"Shared"),
+        default=False,
+        required=False,
+    )
+
     headWeight = schema.Int(
         title=_(u"Head Weight"),
         description=_(u"Please set Head Weight value, default:10."),

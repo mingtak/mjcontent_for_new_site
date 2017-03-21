@@ -40,6 +40,7 @@
   <!-- Catalog -->
   <adapter name="originalUrl" factory=".catalog.originalUrl_indexer" />
   <adapter name="featured" factory=".catalog.featured_indexer" />
+  <adapter name="shared" factory=".catalog.shared_indexer" />
   <adapter name="headWeight" factory=".catalog.headWeight_indexer" />
   <adapter name="keywords" factory=".catalog.keywords_indexer" />
   <adapter name="hasOldPicture" factory=".catalog.hasOldPicture_indexer" />

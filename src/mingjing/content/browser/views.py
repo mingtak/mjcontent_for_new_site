@@ -61,24 +61,20 @@ class CoverView(BrowserView):
     date_range = {
         'query': (
             DateTime()-1,
-            DateTime(),
         ),
-        'range': 'min:max',
+        'range': 'min',
     }
 
-    #@ram.cache(lambda *args: time() // (120))
-    def mainSliderNews(self):
+#    @ram.cache(lambda *args: time() // (120))
+    def mainSliders(self):
         context = self.context
         brain = api.content.find(Type=['News Item', 'Blog', 'Ebook', 'Youtube'], review_state='published', hasOldPicture=True,
                                 featured=True, created=self.date_range, sort_on='headWeight', sort_order='reverse')
-#        import pdb; pdb.set_trace()
-        for item in brain:logger.info('%s: %s' % (item.Title, item.headWeight))
         return brain
 
 
     #@ram.cache(lambda *args: time() // (120))
     def youtubes(self):
-#        import pdb; pdb.set_trace()
         portal = api.portal.get()
         return api.content.find(context=portal, Type='Youtube', featured=True, review_state='published', sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
 
@@ -86,8 +82,8 @@ class CoverView(BrowserView):
     #@ram.cache(lambda *args: time() // (120))
     def todayNews(self):
         portal = api.portal.get()
-        return api.content.find(context=portal, Type='News Item', hasOldPicture=True, featured=True, review_state='published', sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
-
+        brain = api.content.find(context=portal, Type='News Item', hasOldPicture=True, featured=True, review_state='published', sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+        return brain
 
     #@ram.cache(lambda *args: time() // (120))
     def tabsNameLists(self):
@@ -100,7 +96,6 @@ class CoverView(BrowserView):
         tabsBrain_1, tabsBrain_2 ,tabsBrain_3 = [], [], []
 
         for key in tabsNameList_1:
-#            import pdb;pdb.set_trace()
             brain = api.content.find(context=portal, Type='News Item', Subject=key, sort_on='created', review_state='published', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
             tabsBrain_1.append(brain[0:5])
         for key in tabsNameList_2:
@@ -126,7 +121,8 @@ class CoverView(BrowserView):
     def rankingNews(self):
         portal = api.portal.get()
         context = self.context
-        return api.content.find(context=portal, Type='News Item', featured=True, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+        brain = api.content.find(context=portal, Type='News Item', featured=True, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+        return brain
 
 
     #@ram.cache(lambda *args: time() // (120))
