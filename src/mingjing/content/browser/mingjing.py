@@ -126,10 +126,17 @@ class Ranking(BrowserView):
             range = DateTime() - 2.5
         elif range == 'hot':
             range = DateTime() - 0.8
+        elif range == 'd':
+            range = DateTime() - 1
         elif range == 'world':
             range = DateTime() - 5
         else:
-            range = DateTime() - 1
+            range = DateTime() - 90
+
+        if request.form.get('range', None) is None:
+            self.brain = api.content.find(context=self.portal, Type='News Item', sort_on='created', sort_order='reverse', sort_limit=5000)[:5000]
+            return self.template()
+
 
         sqlStr = "SELECT `uid` FROM `mj_counter` WHERE `created` > '%s' ORDER BY `mj_counter`.`viewCounter` DESC LIMIT 20" % \
                  range.strftime('%Y/%m/%d %H:%M:%S')

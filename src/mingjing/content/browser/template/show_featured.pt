@@ -1,0 +1,5 @@
+<ul>
+    <li tal:repeat="item view/brain">
+        <a href="${item/getURL}" target="_blank">${item/getURL}</a>
+    </li>
+</ul>

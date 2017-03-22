@@ -14,6 +14,16 @@ logger = logging.getLogger('mingjing.content')
 LIMIT=20
 
 
+class ShowFeatured(BrowserView):
+
+    template = ViewPageTemplateFile("template/show_featured.pt")
+
+    def __call__(self):
+        portal = api.portal.get()
+        self.brain = api.content.find(context=portal, featured=True, sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
+        return self.template()
+
+
 class NewestContents(BrowserView):
 
     template = ViewPageTemplateFile("template/newest_contents.pt")

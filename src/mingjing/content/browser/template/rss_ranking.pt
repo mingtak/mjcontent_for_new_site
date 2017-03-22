@@ -3,8 +3,10 @@
                    xmlns:tal="http://xml.zope.org/namespaces/tal">
   <channel>
 
-
-    <atom:link rel="self" type="application/rss+xml" href="${view/request/URL}?${view/request/QUERY_STRING}" />
+    <tal:range switch="python:getattr(view.request, 'QUERY_STRING', '')">
+        <atom:link tal:case="string:" rel="self" type="application/rss+xml" href="${view/request/URL}" />
+        <atom:link tal:case="default" rel="self" type="application/rss+xml" href="${view/request/URL}?${view/request/QUERY_STRING}" />
+    </tal:range>
     <tal:title switch="python:view.request.form.get('range', '1d')">
         <title tal:case="string:2d">熱門-12小時</title>
         <title tal:case="string:2d">熱門-48小時</title>
@@ -16,9 +18,13 @@
         <title tal:case="string:editor">推薦</title>
         <title tal:case="string:hot">熱搜</title>
         <title tal:case="string:world">媒體聯播</title>
-        <title tal:case="default">排行-24小時</title>
+        <title tal:case="string:d">排行-24小時</title>
+        <title tal:case="default">北美觀天下RSS</title>
     </tal:title>
-    <link>${view/portal/absolute_url}/news/ranking?${view/request/QUERY_STRING}</link>
+    <tal:range switch="python:getattr(view.request, 'QUERY_STRING', '')">
+        <link tal:case="string:">${view/request/URL}</link>
+        <link tal:case="default">${view/request/URL}?${view/request/QUERY_STRING}</link>
+    </tal:range>
     <description></description>
 
     <language>zh-tw</language>

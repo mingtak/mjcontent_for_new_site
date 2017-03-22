@@ -25,6 +25,13 @@
       />
 
   <browser:page
+      name="show_featured"
+      for="*"
+      class=".views.ShowFeatured"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
       name="mingjing_news"
       for="plone.app.contenttypes.interfaces.IFolder"
       class=".mingjing.MingjingNews"
