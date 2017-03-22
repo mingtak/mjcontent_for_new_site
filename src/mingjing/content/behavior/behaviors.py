@@ -140,6 +140,7 @@ class Featured(object):
 
     # -*- Your behavior property setters & getters here ... -*-
     featured = context_property("featured")
+    shared = context_property("shared")
     headWeight = context_property("headWeight")
 
 
