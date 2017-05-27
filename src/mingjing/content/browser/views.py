@@ -68,18 +68,18 @@ class EbookView(BrowserView):
 class CoverView(BrowserView):
 
     template = ViewPageTemplateFile("template/cover_view.pt")
-    date_range = {
-        'query': (
-            DateTime()-1,
-        ),
-        'range': 'min',
-    }
 
 #    @ram.cache(lambda *args: time() // (120))
     def mainSliders(self):
         context = self.context
+        portal = api.portal.get()
+
         brain = api.content.find(Type=['News Item', 'Blog', 'Ebook', 'Youtube'], review_state='published', hasOldPicture=True,
                                 featured=True, created=self.date_range, sort_on='headWeight', sort_order='reverse')
+#        import pdb ; pdb.set_trace()
+        if not brain or len(brain) < 10:
+            brain = api.content.find(Type=['News Item', 'Blog', 'Ebook', 'Youtube'], review_state='published', hasOldPicture=True,
+                                     context=portal['n07'], sort_on='created', sort_order='reverse', sort_limit=LIMIT)[:LIMIT]
         return brain
 
 
@@ -169,5 +169,10 @@ class CoverView(BrowserView):
         context = self.context
         request = self.request
         portal = api.portal.get()
-
+        self.date_range = {
+            'query': (
+                DateTime()-1,
+            ),
+            'range': 'min',
+        }
         return self.template()
