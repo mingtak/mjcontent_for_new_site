@@ -45,6 +45,7 @@
     <element value="plone.app.relationfield.behavior.IRelatedItems"/>
     <element value="mingjing.content.behavior.behaviors.IOriginalUrl" />
     <element value="mingjing.content.behavior.behaviors.IOldFields" />
+    <element value="plone.app.multilingual.dx.interfaces.IDexterityTranslatable" />
   </property>
 
   <!-- View information -->

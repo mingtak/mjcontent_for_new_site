@@ -21,6 +21,21 @@
     />
 
     <subscriber
+        for="zope.interface.Interface plone.dexterity.interfaces.IAddCancelledEvent"
+        handler=".event.addCancelToFolderContents"
+    />
+
+    <subscriber
+        for="zope.interface.Interface plone.dexterity.interfaces.IEditFinishedEvent"
+        handler=".event.toFolderContents"
+    />
+
+    <subscriber
+        for="zope.interface.Interface plone.dexterity.interfaces.IEditCancelledEvent"
+        handler=".event.toFolderContents"
+    />
+
+    <subscriber
         for="* zope.lifecycleevent.interfaces.IObjectAddedEvent"
         handler=".event.updateDescription"
     />

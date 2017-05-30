@@ -26,13 +26,22 @@ def updateDescription(item, event):
 def toFolderContents(item, event):
 #    parent = item.getParentNode()
     try:
-        if item.Type() in ['Folder', 'Image']:
+        portal = api.portal.get()
+    except:return
+    try:
+        parent = item.getParentNode()
+    except:
+        portal.REQUEST.response.redirect('%s/folder_contents' % portal.absolute_url())
+
+    try:
+        if item.Type() in ['Image', 'File']:
             return
         if item.Type() == 'Folder':
             item.REQUEST.response.redirect('%s/folder_contents' % item.absolute_url())
         else:
-            item.REQUEST.response.redirect('%s/folder_contents' % item.getParentNode().absolute_url())
-    except:pass
+            item.REQUEST.response.redirect('%s/folder_contents' % parent.absolute_url())
+    except:
+        portal.REQUEST.response.redirect('%s/folder_contents' % portal.absolute_url())
 
 
 def userLoginToFolderContents(event):
@@ -57,3 +66,8 @@ def moveContentToTop(item, event):
         try:
             folder.moveObjectsToTop(item.id)
         except:pass
+
+
+def addCancelToFolderContents(item, event):
+    item.REQUEST.response.redirect('%s/folder_contents' % item.absolute_url())
+
