@@ -143,6 +143,13 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      name="reg_trans"
+      for="*"
+      class=".i18n.RegTrans"
+      permission="cmf.AddPortalContent"
+      />
+
   <!-- configlet -->
   <browser:page
     name="mjnetSettingControlPanel"

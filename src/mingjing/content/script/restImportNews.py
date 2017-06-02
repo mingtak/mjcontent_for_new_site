@@ -13,7 +13,7 @@ from datetime import datetime
 # 例: python restImportNews.py username password siteURL news_site_code
 
 news_site_code = {
-    'bbc': ('http://feeds.bbci.co.uk/zhongwen/trad/rss.xml', 'xml'),
+#    'bbc': ('http://feeds.bbci.co.uk/zhongwen/trad/rss.xml', 'xml'),
     'cna-f': ('http://feeds.feedburner.com/rsscna/finance?format=xml', 'xml'),
     'cna-it': ('http://feeds.feedburner.com/rsscna/technology?format=xml', 'xml'),
     'cna-life': ('http://feeds.feedburner.com/rsscna/lifehealth?format=xml', 'xml'),
@@ -30,6 +30,14 @@ news_site_code = {
     'rfi-am-inter': ('http://cn.rfi.fr/%E7%BE%8E%E6%B4%B2/rss', 'xml'),
     'rfi-eu-inter': ('http://cn.rfi.fr/%E6%AC%A7%E6%B4%B2/rss', 'xml'),
     'rfi-life': ('http://cn.rfi.fr/%E7%A7%91%E6%8A%80%E4%B8%8E%E6%96%87%E5%8C%96/rss', 'xml'),
+    'rfi-eco-life': ('http://trad.cn.rfi.fr/%E7%94%9F%E6%85%8B/rss', 'xml'),
+    'rfi-f': ('http://trad.cn.rfi.fr/%E7%B6%93%E8%B2%BF/rss', 'xml'),
+    'rfi-inter': ('http://trad.cn.rfi.fr/%E5%9C%8B%E9%9A%9B/rss', 'xml'),
+    'rfi-ME-inter': ('http://trad.cn.rfi.fr/%E4%B8%AD%E6%9D%B1/rss', 'xml'),
+    'rfi-af-inter': ('http://trad.cn.rfi.fr/%E9%9D%9E%E6%B4%B2/rss', 'xml'),
+
+
+#    'reuters-f': ('http://cn.reuters.com/rssFeed/chinaNews/', 'xml'),
 }
 
 username = sys.argv[1]
@@ -89,6 +97,47 @@ class ImportNews:
         return soup
 
 
+    def rfiNewsContent(self, pageSoup):
+        title = unicode(pageSoup.find('h1', attrs={'itemprop':'name'}).string)
+        text = pageSoup.find('article', attrs={'class':'article-page'})
+        try:
+            items = text.find_all('div', attrs={'class':'soc-connect clearfix'})
+            for item in items:
+                item.decompose()
+        except:pass
+        try:
+            items = text.find_all('small')
+            for item in items:
+                item.decompose()
+        except:pass
+        try:
+            text.find('header').decompose()
+        except:pass
+        try:
+            text.find('div', attrs={'class':'article-pays'}).decompose()
+        except:pass
+        try:
+            text.find('div', attrs={'class':'actions'}).decompose()
+        except:pass
+
+        text = self.cutAttrs(text)
+
+        try:
+            imgs = text.find_all('img')
+            oldPicturePath = ''
+            for img in imgs:
+                if img['src'].startswith('http'):
+                    oldPicturePath = img['src']
+                    break
+        except:
+            oldPicturePath = ''
+        print oldPicturePath
+        text = unicode(text)
+        text += u'<p>新聞來源:法國國際廣播電台(RFI)<p>'
+
+        return [{'title':title, 'text':text}, oldPicturePath]
+
+
     def dwNewsContent(self, pageSoup):
         title = unicode(pageSoup.find('title').string).split('|')[0].strip()
         text = pageSoup.find(class_='longText')
@@ -126,6 +175,28 @@ class ImportNews:
         return [{'title':title, 'text':text}, oldPicturePath]
 
 
+    def ncaNewsContent(self, pageSoup):
+        title = unicode(pageSoup.find('title').string).split('|')[0].strip()
+        text = pageSoup.find(class_='article_box')
+
+        text = self.cutAttrs(text)
+
+        try:
+            imgs = text.find_all('img')
+            oldPicturePath = ''
+            for img in imgs:
+                if img['src'].startswith('http'):
+                    oldPicturePath = img['src']
+                    break
+        except:
+            oldPicturePath = ''
+        print oldPicturePath
+        text = unicode(text)
+        text += u'<p>新聞來源:中央通訊社<p>'
+
+        return [{'title':title, 'text':text}, oldPicturePath]
+
+
     def importNews(self):
         if self.newsList is None:
             return
@@ -141,7 +212,12 @@ class ImportNews:
 
             link = str(link)
 
-            query = requests.get('%s/@search?originalUrl=%s' % (siteURL, urllib.quote(link)), headers={'Accept': 'application/json'})
+            query = requests.get(
+                '%s/@search?originalUrl=%s' % (siteURL, urllib.quote(link)),
+                headers={'Accept': 'application/json'},
+                auth=(username, paswd),
+            )
+            print 'items_total: %s' % query.json().get('items_total')
             if query.json().get('items_total') > 1:
                 continue
 
@@ -154,6 +230,10 @@ class ImportNews:
                 # 取得html及keywords(完整列表)
                 if siteCode.startswith('dw-'):
                     result, oldPicturePath = self.dwNewsContent(pageSoup)
+                elif siteCode.startswith('rfi-'):
+                    result, oldPicturePath = self.rfiNewsContent(pageSoup)
+                elif siteCode.startswith('cna-'):
+                    result, oldPicturePath = self.ncaNewsContent(pageSoup)
 
                 title, text = result['title'], result['text']
 
@@ -171,11 +251,16 @@ class ImportNews:
                 text_s = m2s.convert(text)
                 self.addNews(targetURL_TW, newsId, title_t, text_t, link, oldPicturePath)
                 self.addNews(targetURL_CN, newsId, title_s, text_s, link, oldPicturePath)
-            except:continue
+#                import pdb; pdb.set_trace()
+                urllib.urlopen('http://%s:%s@%s/reg_trans?id=%s' % (username, paswd, siteURL.replace('http://', ''), newsId))
+
+            except:
+                print 'line 227'
+                continue
 
 
     def addNews(self, targetURL, newsId, title, text, link, oldPicturePath):
-            print newsId
+            print '%s: %s' % (newsId, str(link))
             requests.post(
                 targetURL,
                 headers={'Accept': 'application/json'},
@@ -210,7 +295,6 @@ class ImportNews:
             self.folder = '04'
         elif siteCode.endswith('-inter'):
             self.folder = '01'
-
 
 
 instance = ImportNews()
