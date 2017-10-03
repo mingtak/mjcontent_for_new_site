@@ -29,6 +29,10 @@ class IEbook(Interface):
     """  """
 
 
+class IFocus(Interface):
+    """  """
+
+
 class IYoutube(Interface):
     """  """
 

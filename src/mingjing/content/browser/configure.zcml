@@ -18,6 +18,13 @@
       />
 
   <browser:page
+      name="focus_view"
+      for="*"
+      class=".views.FocusView"
+      permission="zope2.View"
+      />
+
+  <browser:page
       name="newest_contents"
       for="*"
       class=".views.NewestContents"

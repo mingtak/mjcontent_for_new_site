@@ -28,25 +28,18 @@ class FocusView(BrowserView):
         expires = self.context.expires()
         createdDate = {'query':[effective, expires], 'range':'min:max'}
 
-        self.brain = []
+
         for key in subject:
-            self.brain += api.content.find(
+            self.brain = api.content.find(
                 context=portal,
                 Type='News Item',
-                Title=key,
+                Title=subject,
                 created=createdDate,
                 sort_on='created',
                 sort_order='reverse',
                 sort_limit=100
             )
-
-        self.results = []
-        resultsUID = []
-        for item in self.brain:
-            if item.UID not in resultsUID:
-                self.results.append(item)
-                resultsUID.append(item.UID)
-
+#        import pdb; pdb.set_trace()
         return self.template()
 
 
