@@ -45,10 +45,11 @@
 
   <!-- View information -->
   <property name="add_view_expr">string:${folder_url}/++add++Collection</property>
-  <property name="default_view">tabular_view</property>
+  <property name="default_view">collection_na_view</property>
   <property name="default_view_fallback">False</property>
   <property name="immediate_view">view</property>
   <property name="view_methods">
+    <element value="collection_na_view"/>
     <element value="tabular_view"/>
   </property>
 

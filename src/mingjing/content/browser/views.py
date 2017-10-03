@@ -14,6 +14,15 @@ logger = logging.getLogger('mingjing.content')
 LIMIT=20
 
 
+class CollectionNAView(BrowserView):
+
+    template = ViewPageTemplateFile("template/collection_na_view.pt")
+
+    def __call__(self):
+        portal = api.portal.get()
+        return self.template()
+
+
 class ShowFeatured(BrowserView):
 
     template = ViewPageTemplateFile("template/show_featured.pt")

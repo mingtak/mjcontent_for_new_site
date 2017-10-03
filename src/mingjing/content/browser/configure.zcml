@@ -150,6 +150,13 @@
       permission="cmf.AddPortalContent"
       />
 
+  <browser:page
+      name="collection_na_view"
+      for="plone.app.contenttypes.content.Collection"
+      class=".views.CollectionNAView"
+      permission="zope2.View"
+      />
+
   <!-- configlet -->
   <browser:page
     name="mjnetSettingControlPanel"

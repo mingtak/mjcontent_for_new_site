@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
+import os
+import random
 from Testing import makerequest
 from AccessControl.SecurityManagement import newSecurityManager
 from zope.site.hooks import setHooks
@@ -179,6 +181,23 @@ class ImportNews:
                             keyTitle = item.split('|||')[1]
                             break
                     subject.append(keyTitle)
+
+
+#TODO opencc, titile and text
+            titleTempFile = str(random.random())
+            textTempFile = str(random.random())
+            with open('/tmp/%s' % titleTempFile, 'wb') as file:
+                file.write(title.encode('utf-8'))
+            title = os.popen('opencc -i /tmp/%s -c zhs2zhtw_vp.ini' % titleTempFile).read().decode('utf-8')
+
+            with open('/tmp/%s' % textTempFile, 'wb') as file:
+                file.write(text.encode('utf-8'))
+            text = os.popen('opencc -i /tmp/%s -c zhs2zhtw_vp.ini' % textTempFile).read().decode('utf-8')
+
+            os.system('rm /tmp/%s /tmp/%s' % (titleTempFile, textTempFile))
+#            m2t = pyopencc.OpenCC('mix2zht.ini')
+#            title = m2t.convert(title)
+#            text = m2t.convert(text)
 
             news = api.content.create(
                 type='News Item',
