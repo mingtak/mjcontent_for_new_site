@@ -199,6 +199,7 @@ class ImportNews:
 #            title = m2t.convert(title)
 #            text = m2t.convert(text)
 
+            featured = True if oldPicturePath else False
             news = api.content.create(
                 type='News Item',
                 id=DateTime().strftime('%Y%m%d%H%M%s'),
@@ -206,6 +207,7 @@ class ImportNews:
                 description=self.getHtml2Text(text)[:100],
                 text=RichTextValue(text),
                 originalUrl=str(link),
+                featured=featured,
                 oldPicturePath=oldPicturePath,
                 container=portal[newsCat],
                 safe_id=True,
